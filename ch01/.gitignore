@@ -1,0 +1,4 @@
+# 아래 둘 제외
+
+node_modules/
+.next/
