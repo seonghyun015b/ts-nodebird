@@ -1,29 +1,22 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import AppLayout from '../components/AppLayout';
 import Head from 'next/head';
 import { Button, Checkbox, Form, Input } from 'antd';
-import { styled } from 'styled-components';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { styled } from 'styled-components';
+
+import AppLayout from '../components/AppLayout';
+import useInput from '../hooks/useInput';
 
 const ErrorMessage = styled.div`
   color: red;
 `;
 
 const Signup = () => {
-  const [id, setId] = useState('');
-  const onChangeId = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setId(e.target.value);
-  }, []);
+  const [id, onChangeId] = useInput('');
 
-  const [nickname, setNickname] = useState('');
-  const onChangeNickname = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setNickname(e.target.value);
-  }, []);
+  const [nickname, onChangeNickname] = useInput('');
 
-  const [password, setPassword] = useState('');
-  const onChangePassword = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  }, []);
+  const [password, onChangePassword] = useInput('');
 
   const [passwordCheck, setPasswordCheck] = useState('');
   const onChangePasswordCheck = useCallback(
@@ -80,6 +73,7 @@ const Signup = () => {
           <Input
             name='user-password'
             type='password'
+            value={password}
             onChange={onChangePassword}
             required
           />
