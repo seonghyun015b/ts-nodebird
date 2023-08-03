@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Col, Input, Menu, Row } from 'antd';
 
@@ -12,19 +12,21 @@ interface AppLayout {
 const AppLayout = ({ children }: AppLayout) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const inputStyle = useMemo(() => ({ verticalAlign: 'middle' }), []);
+
   return (
     <div>
       <Menu mode='horizontal'>
-        <Menu.Item>
+        <Menu.Item key='home'>
           <Link href='/'>노드버드</Link>
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key='profile'>
           <Link href='/profile'>프로필</Link>
         </Menu.Item>
-        <Menu.Item>
-          <Input.Search enterButton style={{ verticalAlign: 'middle' }} />
+        <Menu.Item key='search'>
+          <Input.Search enterButton style={inputStyle} />
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key='signup'>
           <Link href='/signup'>회원가입</Link>
         </Menu.Item>
       </Menu>
