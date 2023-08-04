@@ -6,7 +6,7 @@ import LoginForm from './LoginForm';
 import UserProfile from './UserProfile';
 import { useSelector } from 'react-redux';
 
-import { RootState } from '../reducers';
+import { RootState } from '../reducers/type.d';
 
 interface AppLayout {
   children: React.ReactNode;
