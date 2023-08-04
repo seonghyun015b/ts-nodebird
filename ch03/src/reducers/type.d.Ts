@@ -1,3 +1,5 @@
+// user 타입
+
 export interface UserData {
   id: string;
   password: string;
@@ -21,6 +23,34 @@ export interface LogoutAction {
 
 export type Action = LoginAction | LogoutAction;
 
+// post 타입
+
+export interface PostInitialState {
+  mainPosts: {
+    id: number;
+    User: { id: number; nickname: string };
+    content: string;
+    Images: { src: string }[];
+    Comments: { User: { nickname: string }; content: string }[];
+  }[];
+  imagePaths: [];
+  postAdded: boolean;
+}
+
+export interface DummyPost {
+  id: number;
+  content: string;
+  User: { id: number; nickname: string };
+  Images: [];
+  Comments: [];
+}
+
+type PostAction = {
+  type: typeof ADD_POST;
+};
+
+// root 타입
+
 export interface RootState {
   user: {
     isLoggedIn: boolean;
@@ -28,5 +58,5 @@ export interface RootState {
     signUpData: {};
     loginData: {};
   };
-  post: { mainPosts: [] };
+  post: PostInitialState;
 }
