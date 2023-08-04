@@ -1,3 +1,5 @@
+import { HYDRATE } from 'next-redux-wrapper';
+
 interface UserData {
   id: string;
   password: string;
@@ -47,10 +49,19 @@ export const logoutAction = (): LogoutAction => {
   };
 };
 
-export type ReducerType = LoginAction | LogoutAction;
+export type ReducerType =
+  | LoginAction
+  | LogoutAction
+  | { type: typeof HYDRATE; payload: RootState };
 
 const rootReducer = (state = initialState, action: ReducerType) => {
   switch (action.type) {
+    case HYDRATE:
+      console.log('HYDRATE', action);
+      return {
+        ...state,
+        ...action.payload,
+      };
     case 'LOG_IN':
       return {
         ...state,
