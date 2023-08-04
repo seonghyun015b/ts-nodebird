@@ -1,16 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { Col, Input, Menu, Row } from 'antd';
 
 import LoginForm from './LoginForm';
 import UserProfile from './UserProfile';
+import { useSelector } from 'react-redux';
+
+import { RootState } from '../reducers';
 
 interface AppLayout {
   children: React.ReactNode;
 }
 
 const AppLayout = ({ children }: AppLayout) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
 
   const inputStyle = useMemo(() => ({ verticalAlign: 'middle' }), []);
 
@@ -32,11 +35,7 @@ const AppLayout = ({ children }: AppLayout) => {
       </Menu>
       <Row gutter={8}>
         <Col xs={24} md={6}>
-          {isLoggedIn ? (
-            <UserProfile setIsLoggedIn={setIsLoggedIn} />
-          ) : (
-            <LoginForm setIsLoggedIn={setIsLoggedIn} />
-          )}
+          {isLoggedIn ? <UserProfile /> : <LoginForm />}
         </Col>
         <Col xs={24} md={12}>
           {children}
