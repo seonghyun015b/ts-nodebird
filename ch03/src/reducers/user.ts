@@ -8,7 +8,7 @@ import {
 
 const initialState: InitialState = {
   isLoggedIn: false,
-  user: null,
+  me: null,
   signUpData: {},
   loginData: {},
 };
@@ -32,13 +32,13 @@ const reducer = (state = initialState, action: Action) => {
       return {
         ...state,
         isLoggedIn: true,
-        user: { id: action.data.id, password: action.data.password },
+        me: { id: action.data.id, password: action.data.password },
       };
     case 'LOG_OUT':
       return {
         ...state,
         isLoggedIn: false,
-        user: null,
+        me: null,
       };
     default:
       return state;

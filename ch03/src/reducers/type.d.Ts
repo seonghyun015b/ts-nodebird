@@ -7,7 +7,7 @@ export interface UserData {
 
 export interface InitialState {
   isLoggedIn: boolean;
-  user: UserData | null;
+  me: UserData | null;
   signUpData: {};
   loginData: {};
 }
@@ -25,14 +25,16 @@ export type Action = LoginAction | LogoutAction;
 
 // post 타입
 
+export interface Posts {
+  id: number;
+  User: { id: number; nickname: string };
+  content: string;
+  Images: { src: string }[];
+  Comments: { User: { nickname: string }; content: string }[];
+}
+
 export interface PostInitialState {
-  mainPosts: {
-    id: number;
-    User: { id: number; nickname: string };
-    content: string;
-    Images: { src: string }[];
-    Comments: { User: { nickname: string }; content: string }[];
-  }[];
+  mainPosts: Posts[];
   imagePaths: [];
   postAdded: boolean;
 }
@@ -54,7 +56,7 @@ type PostAction = {
 export interface RootState {
   user: {
     isLoggedIn: boolean;
-    user: UserData | null;
+    me: UserData | null;
     signUpData: {};
     loginData: {};
   };
