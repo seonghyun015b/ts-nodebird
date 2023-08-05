@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import PostImages from './PostImages';
-import { Card, Popover, Button, Avatar } from 'antd';
+import { Card, Popover, Button, Avatar, List } from 'antd';
 import {
   EllipsisOutlined,
   HeartOutlined,
@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { Posts, RootState } from '../reducers/type';
+import CommentForm from './CommentForm';
 
 interface PostCardProp {
   post: Posts;
@@ -70,7 +71,25 @@ const PostCard = ({ post }: PostCardProp) => {
           description={post.content}
         />
       </Card>
-      {commentFormOpenend && <div>댓글 부분</div>}
+      {commentFormOpenend && (
+        <div>
+          <CommentForm post={post} />
+          <List
+            header={`${post.Comments.length}개의 댓글`}
+            itemLayout='horizontal'
+            dataSource={post.Comments}
+            renderItem={(item) => (
+              <List.Item>
+                <List.Item.Meta
+                  title={item.User.nickname}
+                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                  description={item.content}
+                />
+              </List.Item>
+            )}
+          />
+        </div>
+      )}
     </div>
   );
 };
