@@ -3,22 +3,25 @@
 export interface UserData {
   id: string;
   password: string;
+  nickname?: string;
 }
 
 export interface InitialState {
+  isLoggingIn: boolean;
   isLoggedIn: boolean;
+  isLoggingOut: boolean;
   me: UserData | null;
   signUpData: {};
   loginData: {};
 }
 
 export interface LoginAction {
-  type: 'LOG_IN';
+  type: 'LOG_IN_REQUEST' | 'LOG_IN_SUCCESS' | 'LOG_IN_FAILURE';
   data: UserData;
 }
 
 export interface LogoutAction {
-  type: 'LOG_OUT';
+  type: 'LOG_OUT_REQUEST' | 'LOG_OUT_SUCCESS' | 'LOG_OUT_FAILURE';
 }
 
 export type Action = LoginAction | LogoutAction;
@@ -55,7 +58,9 @@ type PostAction = {
 
 export interface RootState {
   user: {
+    isLoggingIn: boolean;
     isLoggedIn: boolean;
+    isLoggingOut: boolean;
     me: UserData | null;
     signUpData: {};
     loginData: {};
