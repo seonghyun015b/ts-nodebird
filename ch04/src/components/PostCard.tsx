@@ -20,7 +20,6 @@ interface PostCardProp {
 
 const PostCard = ({ post }: PostCardProp) => {
   const id = useSelector((state: RootState) => state.user.me?.id);
-
   const { removePostLoading } = useSelector((state: RootState) => state.post);
 
   const dispatch = useDispatch();
@@ -63,7 +62,7 @@ const PostCard = ({ post }: PostCardProp) => {
             key='more'
             content={
               <Button.Group>
-                {id && post.User.id === Number(id) ? (
+                {id && post.User.id === id ? (
                   <>
                     <Button>수정</Button>
                     <Button

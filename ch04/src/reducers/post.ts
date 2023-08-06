@@ -131,7 +131,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         removePostLoading: true,
         removePostDone: false,
-        removePostError: null,
+        removePostError: false,
       };
     case REMOVE_POST_SUCCESS:
       return {

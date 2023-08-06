@@ -53,7 +53,8 @@ function* addComment(action) {
     });
   }
 }
-function* removePost(action) {
+
+function* removePost(action: any) {
   try {
     yield delay(1000);
     yield put({

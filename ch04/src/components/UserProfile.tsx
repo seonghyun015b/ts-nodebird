@@ -10,6 +10,8 @@ const UserProfile = () => {
 
   const { me, logOutLoading } = useSelector((state: RootState) => state.user);
 
+  console.log('me', me.Posts);
+
   const onLogOut = useCallback(() => {
     dispatch(logoutRequestAction());
   }, []);
@@ -23,12 +25,12 @@ const UserProfile = () => {
           {me.Posts.length}
         </div>,
         <div key='follower'>
-          팔로워
+          팔로잉
           <br />
           {me.Followings.length}
         </div>,
         <div key='following'>
-          팔로잉
+          팔로워
           <br />
           {me.Followers.length}
         </div>,

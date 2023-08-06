@@ -16,6 +16,9 @@ const initialState: InitialState = {
   signUpLoading: false, // 회원가입 시도중
   signUpDone: false,
   signUpError: false,
+  changeNicknameLoading: false, // 닉네임 변경 시도중
+  changeNicknameDone: false,
+  changeNicknameError: false,
   me: null,
   signUpData: {},
   loginData: {},
@@ -32,6 +35,10 @@ export const LOG_OUT_FAILURE = 'LOG_OUT_FAILURE';
 export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
 export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
+
+export const CHANGE_NICKNAME_REQUEST = 'CHANGE_NICKNAME_REQUEST';
+export const CHANGE_NICKNAME_SUCCESS = 'CHANGE_NICKNAME_SUCCESS';
+export const CHANGE_NICKNAME_FAILURE = 'CHANGE_NICKNAME_FAILURE';
 
 export const FOLLOW_REQUEST = 'FOLLOW_REQUEST';
 export const FOLLOW_SUCCESS = 'FOLLOW_SUCCESS';
@@ -82,27 +89,27 @@ const reducer = (state = initialState, action: Action) => {
         logInDone: true,
         me: dummyUser(action.data),
       };
-    case 'LOG_IN_FAILURE':
+    case LOG_IN_FAILURE:
       return {
         ...state,
         logInLoading: false,
         logInError: action.error,
       };
-    case 'LOG_OUT_REQUEST':
+    case LOG_OUT_REQUEST:
       return {
         ...state,
         logOutLoading: true,
         logOutDone: false,
         logOutError: false,
       };
-    case 'LOG_OUT_SUCCESS':
+    case LOG_OUT_SUCCESS:
       return {
         ...state,
         logOutLoading: false,
         logOutDone: true,
         me: null,
       };
-    case 'LOG_OUT_FAILURE':
+    case LOG_OUT_FAILURE:
       return {
         ...state,
         logOutLoading: false,
@@ -127,6 +134,26 @@ const reducer = (state = initialState, action: Action) => {
         ...state,
         signUpLoading: false,
         signUpError: action.error,
+      };
+
+    case CHANGE_NICKNAME_REQUEST:
+      return {
+        ...state,
+        changeNicknameLoading: true,
+        changeNicknameDone: false,
+        changeNicknameError: null,
+      };
+    case CHANGE_NICKNAME_SUCCESS:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameDone: true,
+      };
+    case CHANGE_NICKNAME_FAILURE:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameError: action.error,
       };
 
     case ADD_POST_TO_ME:

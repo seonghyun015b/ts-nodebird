@@ -1,6 +1,3 @@
-import { ADD_POST_TO_ME } from './user';
-// user 타입
-
 export interface UserData {
   email: string | number;
   password: string;
@@ -21,7 +18,10 @@ export interface InitialState {
   signUpLoading: boolean; // 회원가입 시도중
   signUpDone: boolean;
   signUpError: boolean;
-  me: UserData | null;
+  changeNicknameLoading: boolean; // 닉네임 변경 시도중
+  changeNicknameDone: boolean;
+  changeNicknameError: boolean;
+  me: UserData;
   signUpData: {};
   loginData: {};
 }
