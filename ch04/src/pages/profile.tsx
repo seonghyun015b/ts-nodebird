@@ -8,6 +8,7 @@ import { RootState } from '../reducers/type';
 
 const Profile = () => {
   const { me } = useSelector((state: RootState) => state.user);
+
   return (
     <>
       <Head>

@@ -8,16 +8,23 @@ import {
   MessageOutlined,
   RetweetOutlined,
 } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Posts, RootState } from '../reducers/type';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
+import { REMOVE_POST_REQUEST } from '../reducers/post';
 
 interface PostCardProp {
   post: Posts;
 }
 
 const PostCard = ({ post }: PostCardProp) => {
+  const id = useSelector((state: RootState) => state.user.me?.id);
+
+  const { removePostLoading } = useSelector((state: RootState) => state.post);
+
+  const dispatch = useDispatch();
+
   const [liked, setLiked] = useState(false);
   const onToggleLiked = useCallback(() => {
     setLiked((prev) => !prev);
@@ -29,7 +36,12 @@ const PostCard = ({ post }: PostCardProp) => {
     setCommentFormOpened((prev) => !prev);
   }, []);
 
-  const id = useSelector((state: RootState) => state.user.me?.id);
+  const onRemovePost = useCallback(() => {
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
+  }, []);
 
   return (
     <div style={{ marginBottom: 20 }}>
@@ -54,7 +66,13 @@ const PostCard = ({ post }: PostCardProp) => {
                 {id && post.User.id === Number(id) ? (
                   <>
                     <Button>수정</Button>
-                    <Button danger>삭제</Button>
+                    <Button
+                      danger
+                      loading={removePostLoading}
+                      onClick={onRemovePost}
+                    >
+                      삭제
+                    </Button>
                   </>
                 ) : (
                   <Button>신고</Button>

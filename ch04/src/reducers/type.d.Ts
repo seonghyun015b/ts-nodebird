@@ -1,3 +1,4 @@
+import { ADD_POST_TO_ME } from './user';
 // user 타입
 
 export interface UserData {
@@ -5,9 +6,9 @@ export interface UserData {
   password: string;
   id?: number;
   nickname?: string;
-  Posts?: string[];
-  Followings?: string[];
-  Followers?: string[];
+  Posts?: { id: number }[];
+  Followings?: { nickname: string }[];
+  Followers?: { nickname: string }[];
 }
 
 export interface InitialState {
@@ -38,7 +39,12 @@ export interface SignUpAction {
   type: 'SIGN_UP_REQUEST' | 'SIGN_UP_SUCCESS' | 'SIGN_UP_FAILURE';
 }
 
-export type Action = LoginAction | LogoutAction | SignUpAction;
+export type Action =
+  | LoginAction
+  | LogoutAction
+  | SignUpAction
+  | ADD_POST_TO_ME
+  | REMOVE_POST_OF_ME;
 
 // post 타입
 
@@ -46,8 +52,12 @@ export interface Posts {
   id: number;
   User: { id: number; nickname: string };
   content: string;
-  Images: { src: string }[];
-  Comments: { User: { nickname: string }; content: string }[];
+  Images: { id: string; src: string }[];
+  Comments: {
+    id: string;
+    User: { id: string; nickname: string };
+    content: string;
+  }[];
 }
 
 export interface PostInitialState {
@@ -56,6 +66,10 @@ export interface PostInitialState {
   addPostLoading: boolean;
   addPostDone: boolean;
   addPostError: boolean;
+
+  removePostLoading: boolean;
+  removePostDone: boolean;
+  removePostError: boolean;
 
   addCommentLoading: boolean;
   addCommentDone: boolean;
