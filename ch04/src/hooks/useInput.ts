@@ -1,8 +1,15 @@
-import { useState, useCallback, ChangeEvent } from 'react';
+import {
+  useState,
+  useCallback,
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+} from 'react';
 
 type InputHook = [
   string,
-  (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => void
+  (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => void,
+  Dispatch<SetStateAction<string>>
 ];
 
 export default (initialValue: string): InputHook => {
@@ -13,5 +20,5 @@ export default (initialValue: string): InputHook => {
     },
     []
   );
-  return [value, handler];
+  return [value, handler, setValue];
 };

@@ -1,12 +1,13 @@
 // user 타입
 
 export interface UserData {
-  id: number;
+  email: string | number;
   password: string;
+  id?: number;
   nickname?: string;
-  Posts: string[];
-  Followings: string[];
-  Followers: string[];
+  Posts?: string[];
+  Followings?: string[];
+  Followers?: string[];
 }
 
 export interface InitialState {

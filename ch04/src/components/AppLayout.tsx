@@ -13,7 +13,7 @@ interface AppLayout {
 }
 
 const AppLayout = ({ children }: AppLayout) => {
-  const { logInDone } = useSelector((state: RootState) => state.user);
+  const { me } = useSelector((state: RootState) => state.user);
 
   const inputStyle = useMemo(() => ({ verticalAlign: 'middle' }), []);
 
@@ -35,7 +35,7 @@ const AppLayout = ({ children }: AppLayout) => {
       </Menu>
       <Row gutter={8}>
         <Col xs={24} md={6}>
-          {logInDone ? <UserProfile /> : <LoginForm />}
+          {me ? <UserProfile /> : <LoginForm />}
         </Col>
         <Col xs={24} md={12}>
           {children}
