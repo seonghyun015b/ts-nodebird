@@ -1,15 +1,24 @@
 // user 타입
 
 export interface UserData {
-  id: string;
+  id: number;
   password: string;
   nickname?: string;
+  Posts: string[];
+  Followings: string[];
+  Followers: string[];
 }
 
 export interface InitialState {
-  isLoggingIn: boolean;
-  isLoggedIn: boolean;
-  isLoggingOut: boolean;
+  logInLoading: boolean; // 로그인 시도중
+  logInDone: boolean;
+  logInError: boolean;
+  logOutLoading: boolean; // 로그아웃 시도중
+  logOutDone: boolean;
+  logOutError: boolean;
+  signUpLoading: boolean; // 회원가입 시도중
+  signUpDone: boolean;
+  signUpError: boolean;
   me: UserData | null;
   signUpData: {};
   loginData: {};
@@ -24,7 +33,11 @@ export interface LogoutAction {
   type: 'LOG_OUT_REQUEST' | 'LOG_OUT_SUCCESS' | 'LOG_OUT_FAILURE';
 }
 
-export type Action = LoginAction | LogoutAction;
+export interface SignUpAction {
+  type: 'SIGN_UP_REQUEST' | 'SIGN_UP_SUCCESS' | 'SIGN_UP_FAILURE';
+}
+
+export type Action = LoginAction | LogoutAction | SignUpAction;
 
 // post 타입
 
@@ -39,7 +52,13 @@ export interface Posts {
 export interface PostInitialState {
   mainPosts: Posts[];
   imagePaths: [];
-  postAdded: boolean;
+  addPostLoading: boolean;
+  addPostDone: boolean;
+  addPostError: boolean;
+
+  addCommentLoading: boolean;
+  addCommentDone: boolean;
+  addCommentError: boolean;
 }
 
 export interface DummyPost {
@@ -58,9 +77,15 @@ type PostAction = {
 
 export interface RootState {
   user: {
-    isLoggingIn: boolean;
-    isLoggedIn: boolean;
-    isLoggingOut: boolean;
+    logInLoading: boolean; // 로그인 시도중
+    logInDone: boolean;
+    logInError: boolean;
+    logOutLoading: boolean; // 로그아웃 시도중
+    logOutDone: boolean;
+    logOutError: boolean;
+    signUpLoading: boolean; // 회원가입 시도중
+    signUpDone: boolean;
+    signUpError: boolean;
     me: UserData | null;
     signUpData: {};
     loginData: {};

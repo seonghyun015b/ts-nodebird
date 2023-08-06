@@ -22,7 +22,7 @@ const LoginForm = () => {
 
   const dispatch = useDispatch();
 
-  const { isLoggingIn } = useSelector((state: RootState) => state.user);
+  const { logInLoading } = useSelector((state: RootState) => state.user);
 
   const onSubmitForm = useCallback(() => {
     console.log(id, password);
@@ -49,7 +49,7 @@ const LoginForm = () => {
           />
         </div>
         <ButtonWrapper>
-          <Button type='primary' htmlType='submit' loading={isLoggingIn}>
+          <Button type='primary' htmlType='submit' loading={logInLoading}>
             로그인
           </Button>
           <Link href='/signup'>

@@ -1,52 +1,74 @@
 import { all, fork, put, delay, takeEvery } from 'redux-saga/effects';
-import { LoginAction } from '../reducers/type';
+import { LoginAction, LogoutAction, SignUpAction } from '../reducers/type';
 
-interface LogInAction {
-  type: 'LOG_IN_REQUEST';
-  data: any; // 추후 변경
-}
-
-interface LogOutAction {
-  type: 'LOG_OUT_REQUEST';
-}
+import {
+  LOG_IN_REQUEST,
+  LOG_IN_SUCCESS,
+  LOG_IN_FAILURE,
+  LOG_OUT_REQUEST,
+  LOG_OUT_SUCCESS,
+  LOG_OUT_FAILURE,
+  SIGN_UP_REQUEST,
+  SIGN_UP_SUCCESS,
+  SIGN_UP_FAILURE,
+} from '../reducers/user';
 
 function* logIn(action: LoginAction) {
   try {
     yield delay(1000);
     yield put({
-      type: 'LOG_IN_SUCCESS',
+      type: LOG_IN_SUCCESS,
       data: action.data,
     });
   } catch (err) {
     yield put({
-      type: 'LOG_IN_FAILURE',
+      type: LOG_IN_FAILURE,
       data: err.response.data,
     });
   }
 }
 
-function* logOut(action: LogOutAction) {
+function* logOut(action: LogoutAction) {
   try {
     yield delay(1000);
     yield put({
-      type: 'LOG_OUT_SUCCESS',
+      type: LOG_OUT_SUCCESS,
     });
   } catch (err) {
     yield put({
-      type: 'LOG_OUT_FAILURE',
+      type: LOG_OUT_FAILURE,
       data: err.response.data,
+    });
+  }
+}
+
+function* signUp(action: SignUpAction) {
+  try {
+    // const result = yield call(logoutAPI);
+    yield delay(1000);
+    yield put({
+      type: SIGN_UP_SUCCESS,
+    });
+  } catch (err) {
+    yield put({
+      type: SIGN_UP_FAILURE,
+      error: err.response.data,
     });
   }
 }
 
 function* watchLogIn() {
-  yield takeEvery('LOG_IN_REQUEST', logIn);
+  yield takeEvery(LOG_IN_REQUEST, logIn);
 }
 
 function* watchLogOut() {
-  yield takeEvery('LOG_OUT_REQUEST', logOut);
+  yield takeEvery(LOG_OUT_REQUEST, logOut);
+}
+
+function* watchSignUp() {
+  yield takeEvery(SIGN_UP_REQUEST, signUp);
 }
 
 export default function* userSaga() {
-  yield all([fork(watchLogIn), fork(watchLogOut)]);
+  yield all([fork(watchLogIn), fork(watchLogOut), fork(watchSignUp)]);
 }
