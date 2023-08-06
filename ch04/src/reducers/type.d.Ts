@@ -52,7 +52,7 @@ export interface Posts {
 
 export interface PostInitialState {
   mainPosts: Posts[];
-  imagePaths: [];
+  imagePaths: string[];
   addPostLoading: boolean;
   addPostDone: boolean;
   addPostError: boolean;
@@ -63,16 +63,21 @@ export interface PostInitialState {
 }
 
 export interface DummyPost {
-  id: number;
+  id: string;
   content: string;
   User: { id: number; nickname: string };
   Images: [];
   Comments: [];
 }
 
-type PostAction = {
-  type: typeof ADD_POST;
-};
+export interface DummyComment {
+  id: string;
+  content: string;
+  User: {
+    id: number;
+    nickname: string;
+  };
+}
 
 // root 타입
 

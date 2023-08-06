@@ -6,12 +6,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../reducers/type';
 
 const Home = () => {
-  const { isLoggedIn } = useSelector((state: RootState) => state.user);
+  const { me } = useSelector((state: RootState) => state.user);
   const { mainPosts } = useSelector((state: RootState) => state.post);
 
   return (
     <AppLayout>
-      {isLoggedIn && <PostForm />}
+      {me && <PostForm />}
       {mainPosts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}

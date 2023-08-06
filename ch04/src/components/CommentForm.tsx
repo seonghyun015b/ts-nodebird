@@ -14,13 +14,15 @@ const CommentForm = ({ post }: CommentFormProp) => {
 
   const id = useSelector((state: RootState) => state.user.me?.id);
 
-  const { addCommentDone } = useSelector((state: RootState) => state.post);
+  const { addCommentDone, addCommentLoading } = useSelector(
+    (state: RootState) => state.post
+  );
 
-  const [commentText, onChangeCommentText, setComment] = useInput('');
+  const [commentText, onChangeCommentText, setCommentText] = useInput('');
 
   useEffect(() => {
     if (addCommentDone) {
-      setComment('');
+      setCommentText('');
     }
   }, [addCommentDone]);
 
@@ -44,9 +46,10 @@ const CommentForm = ({ post }: CommentFormProp) => {
           rows={4}
         />
         <Button
-          style={{ position: 'absolute', right: 0, bottom: -40 }}
+          style={{ position: 'absolute', right: 0, bottom: -40, zIndex: 1 }}
           type='primary'
           htmlType='submit'
+          loading={addCommentLoading}
         >
           삐약
         </Button>

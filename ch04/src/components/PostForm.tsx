@@ -20,7 +20,7 @@ const PostForm = () => {
     }
   }, [imageInput.current]);
 
-  const { imagePaths, addPostDone } = useSelector(
+  const { imagePaths, addPostDone, addPostLoading } = useSelector(
     (state: RootState) => state.post
   );
   const dispatch = useDispatch();
@@ -57,7 +57,12 @@ const PostForm = () => {
           ref={imageInput}
         />
         <Button onClick={onClickImageUpLoad}>이미지 업로드</Button>
-        <Button type='primary' style={{ float: 'right' }} htmlType='submit'>
+        <Button
+          type='primary'
+          style={{ float: 'right' }}
+          htmlType='submit'
+          loading={addPostLoading}
+        >
           짹짹
         </Button>
       </div>
