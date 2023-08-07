@@ -4,53 +4,16 @@ import faker from '@faker-js/faker';
 faker.seed(123);
 
 export const initialState = {
-  mainPosts: [
-    {
-      id: 1,
-      User: {
-        id: 1,
-        nickname: '제로초',
-      },
-      content: '첫 번째 게시글 #해시태그 #익스프레스',
-      Images: [
-        {
-          id: shortId.generate(),
-          src: 'https://upload.wikimedia.org/wikipedia/commons/6/65/Baby.tux-800x800.png',
-        },
-        {
-          id: shortId.generate(),
-          src: 'https://cdnb.artstation.com/p/assets/images/images/002/023/575/large/okan-bulbul-penguin-new04.jpg?1456141918',
-        },
-        {
-          id: shortId.generate(),
-          src: 'https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA0L2pvYjY4Ni0yODUteC5qcGc.jpg?s=-wP7u0WhXmFn8GbzreOWR2zdM7O7EP79uN6zvW1vavI',
-        },
-      ],
-      Comments: [
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: 'nero',
-          },
-          content: '우와 개정판이 나왔군요~',
-        },
-        {
-          id: shortId.generate(),
-          User: {
-            id: shortId.generate(),
-            nickname: 'hero',
-          },
-          content: '얼른 사고싶어요~',
-        },
-      ],
-    },
-  ],
+  mainPosts: [],
   imagePaths: [],
 
   addPostLoading: false,
   addPostDone: false,
   addPostError: false,
+
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
 
   removePostLoading: false,
   removePostDone: false,
@@ -59,10 +22,12 @@ export const initialState = {
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: false,
+
+  hasMorePost: true,
 };
 
-initialState.mainPosts = initialState.mainPosts.concat(
-  Array(20)
+export const generateDummyPost = (number) =>
+  Array(number)
     .fill()
     .map(() => ({
       id: shortId.generate(),
@@ -85,8 +50,7 @@ initialState.mainPosts = initialState.mainPosts.concat(
           content: faker.lorem.sentence(),
         },
       ],
-    }))
-);
+    }));
 
 const dummyPost = (data) => ({
   id: shortId.generate(),
@@ -107,6 +71,10 @@ const dummyComment = (data) => ({
     nickname: '제로초',
   },
 });
+
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -133,14 +101,30 @@ export const addComment = (data) => ({
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = false;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.hasMorePost = draft.mainPosts.length < 50;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
+        break;
+
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
         draft.addPostDone = false;
-        draft.addPostError = null;
+        draft.addPostError = false;
         break;
       case ADD_POST_SUCCESS:
         draft.addPostLoading = false;
-        draft.adpostdone = true;
+        draft.addPostDone = true;
         draft.mainPosts.unshift(dummyPost(action.data), ...state.mainPosts);
         break;
       case ADD_POST_FAILURE:
