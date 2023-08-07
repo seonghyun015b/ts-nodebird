@@ -35,7 +35,7 @@ const CommentForm = ({ post }: CommentFormProp) => {
         userId: id,
       },
     });
-  }, [id, commentText]);
+  }, [commentText, id]);
 
   return (
     <Form onFinish={onSubmitComment}>

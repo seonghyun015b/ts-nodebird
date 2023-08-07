@@ -13,7 +13,7 @@ import {
   SIGN_UP_FAILURE,
 } from '../reducers/user';
 
-function* logIn(action: LoginAction) {
+function* logIn(action) {
   try {
     yield delay(1000);
     yield put({
@@ -28,7 +28,7 @@ function* logIn(action: LoginAction) {
   }
 }
 
-function* logOut(action: LogoutAction) {
+function* logOut(action) {
   try {
     yield delay(1000);
     yield put({
@@ -42,7 +42,7 @@ function* logOut(action: LogoutAction) {
   }
 }
 
-function* signUp(action: SignUpAction) {
+function* signUp(action) {
   try {
     // const result = yield call(logoutAPI);
     yield delay(1000);

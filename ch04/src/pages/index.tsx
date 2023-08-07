@@ -7,6 +7,7 @@ import { RootState } from '../reducers/type';
 
 const Home = () => {
   const { me } = useSelector((state: RootState) => state.user);
+
   const { mainPosts } = useSelector((state: RootState) => state.post);
 
   return (

@@ -19,6 +19,8 @@ interface PostCardProp {
 }
 
 const PostCard = ({ post }: PostCardProp) => {
+  console.log('post added', post.id);
+
   const id = useSelector((state: RootState) => state.user.me?.id);
   const { removePostLoading } = useSelector((state: RootState) => state.post);
 

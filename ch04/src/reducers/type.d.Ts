@@ -1,9 +1,9 @@
 export interface UserData {
   email: string | number;
   password: string;
-  id?: number;
+  id?: number | string;
   nickname?: string;
-  Posts?: { id: number }[];
+  Posts: { id: string }[];
   Followings?: { nickname: string }[];
   Followers?: { nickname: string }[];
 }
@@ -21,7 +21,7 @@ export interface InitialState {
   changeNicknameLoading: boolean; // 닉네임 변경 시도중
   changeNicknameDone: boolean;
   changeNicknameError: boolean;
-  me: UserData;
+  me: UserData | null;
   signUpData: {};
   loginData: {};
 }
@@ -106,7 +106,7 @@ export interface RootState {
     signUpLoading: boolean; // 회원가입 시도중
     signUpDone: boolean;
     signUpError: boolean;
-    me: UserData | null;
+    me: UserData;
     signUpData: {};
     loginData: {};
   };

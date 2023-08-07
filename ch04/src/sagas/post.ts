@@ -54,7 +54,7 @@ function* addComment(action) {
   }
 }
 
-function* removePost(action: any) {
+function* removePost(action) {
   try {
     yield delay(1000);
     yield put({
@@ -65,6 +65,7 @@ function* removePost(action: any) {
       type: REMOVE_POST_OF_ME,
       data: action.data,
     });
+    yield console.log('delete saga', action.data);
   } catch (err) {
     yield put({
       type: REMOVE_POST_FAILURE,
@@ -72,6 +73,7 @@ function* removePost(action: any) {
     });
   }
 }
+
 function* watchAddPost() {
   yield takeEvery(ADD_POST_REQUEST, addPost);
 }
