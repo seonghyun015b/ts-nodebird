@@ -4,11 +4,11 @@ export interface UserData {
   id?: number | string;
   nickname?: string;
   Posts: { id: string }[];
-  Followings?: { nickname: string }[];
-  Followers?: { nickname: string }[];
+  Followings?: { id: number; nickname: string }[];
+  Followers?: { id: number; nickname: string }[];
 }
 
-export interface InitialState {
+export interface UserInitialState {
   logInLoading: boolean; // 로그인 시도중
   logInDone: boolean;
   logInError: boolean;
@@ -21,6 +21,12 @@ export interface InitialState {
   changeNicknameLoading: boolean; // 닉네임 변경 시도중
   changeNicknameDone: boolean;
   changeNicknameError: boolean;
+  followLoading: boolean; // 팔로우 시도중
+  followDone: boolean;
+  followError: boolean;
+  unfollowLoading: boolean; // 언팔로우 시도중
+  unfollowDone: boolean;
+  unfollowError: boolean;
   me: UserData | null;
   signUpData: {};
   loginData: {};
@@ -106,6 +112,15 @@ export interface RootState {
     signUpLoading: boolean; // 회원가입 시도중
     signUpDone: boolean;
     signUpError: boolean;
+    changeNicknameLoading: boolean; // 닉네임 변경 시도중
+    changeNicknameDone: boolean;
+    changeNicknameError: boolean;
+    followLoading: boolean; // 팔로우 시도중
+    followDone: boolean;
+    followError: boolean;
+    unfollowLoading: boolean; // 언팔로우 시도중
+    unfollowDone: boolean;
+    unfollowError: boolean;
     me: UserData;
     signUpData: {};
     loginData: {};
