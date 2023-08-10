@@ -1,5 +1,6 @@
-import { all, fork, put, delay, takeEvery } from 'redux-saga/effects';
+import { all, call, fork, put, delay, takeEvery } from 'redux-saga/effects';
 import { LoginAction, LogoutAction, SignUpAction } from '../reducers/type';
+import axios from 'axios';
 
 import {
   LOG_IN_REQUEST,
@@ -48,10 +49,16 @@ function* logOut(action) {
   }
 }
 
+// 회원가입
+
+function signUpAPI(data) {
+  return axios.post('http://localhost:3065/user', data);
+}
+
 function* signUp(action) {
   try {
-    // const result = yield call(logoutAPI);
-    yield delay(1000);
+    const result = yield call(signUpAPI, action.data);
+    console.log(result);
     yield put({
       type: SIGN_UP_SUCCESS,
     });
