@@ -80,6 +80,12 @@ export interface PostInitialState {
   addCommentLoading: boolean;
   addCommentDone: boolean;
   addCommentError: boolean;
+
+  loadPostLoading: boolean;
+  loadPostDone: boolean;
+  loadPostError: boolean;
+
+  hasMorePost: boolean;
 }
 
 export interface DummyPost {

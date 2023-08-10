@@ -1,27 +1,34 @@
-module.exports = (sequelize, DataType) => {
-  const User = sequelize.define(
-    'User',
-    {
-      email: {
-        type: DataType.STRING(30),
-        allowNull: false,
-        unique: true,
+const DataTypes = require('sequelize');
+const { Model } = DataTypes;
+
+module.exports = class User extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        email: {
+          type: DataTypes.STRING(30),
+          allowNull: false,
+          unique: true,
+        },
+        nickname: {
+          type: DataTypes.STRING(30),
+          allowNull: false,
+        },
+        password: {
+          type: DataTypes.STRING(100),
+          allowNull: false,
+        },
       },
-      nickname: {
-        type: DataType.STRING(30),
-        allowNull: false,
-      },
-      password: {
-        type: DataType.STRING(100),
-        allowNull: false,
-      },
-    },
-    {
-      charset: 'utf8',
-      collate: 'utf8_general_ci',
-    }
-  );
-  User.associate = (db) => {
+      {
+        modelName: 'User',
+        tableName: 'users',
+        charset: 'utf8',
+        collate: 'utf8_general_ci',
+        sequelize,
+      }
+    );
+  }
+  static associate(db) {
     db.User.hasMany(db.Post);
     db.User.hasMany(db.Comment);
     db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' });
@@ -35,6 +42,5 @@ module.exports = (sequelize, DataType) => {
       as: 'Followings',
       foreignKey: 'FollowerId',
     });
-  };
-  return User;
+  }
 };
