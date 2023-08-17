@@ -1,8 +1,32 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { User } = require('../models');
+const passport = require('passport');
 
 const router = express.Router();
+
+// 로그인
+
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      console.error(err);
+      return next(err);
+    }
+    if (info) {
+      return res.status(403).send(info.reason);
+    }
+    return req.login(user, async (loginErr) => {
+      if (loginErr) {
+        console.error(loginErr);
+        return next(loginErr);
+      }
+      return res.json(user);
+    });
+  })(req, res, next);
+});
+
+// 회원가입
 
 router.post('/', async (req, res, next) => {
   try {

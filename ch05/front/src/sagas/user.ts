@@ -20,12 +20,18 @@ import {
   UNFOLLOW_FAILURE,
 } from '../reducers/user';
 
+// 로그인
+
+function loginAPI(data) {
+  return axios.post('/user/login', data);
+}
+
 function* logIn(action) {
   try {
-    yield delay(1000);
+    const result = yield call(loginAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err) {
     yield put({
@@ -34,6 +40,8 @@ function* logIn(action) {
     });
   }
 }
+
+// 로그아웃
 
 function* logOut(action) {
   try {
@@ -52,7 +60,7 @@ function* logOut(action) {
 // 회원가입
 
 function signUpAPI(data) {
-  return axios.post('http://localhost:3065/user', data);
+  return axios.post('/user', data);
 }
 
 function* signUp(action) {
