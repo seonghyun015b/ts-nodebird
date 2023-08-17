@@ -2,21 +2,21 @@
   "development": {
     "username": "tsnode",
     "password": "tsnode",
-    "database": "database_development",
+    "database": "tsnode-bird",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "tsnode",
     "password": null,
-    "database": "database_test",
+    "database": "tsnode-bird",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "tsnode",
     "password": null,
-    "database": "database_production",
+    "database": "tsnode-bird",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

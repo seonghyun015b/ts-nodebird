@@ -132,7 +132,7 @@ const Signup = () => {
           {termError && <ErrorMessage>약관에 동의하셔야 합니다.</ErrorMessage>}
         </div>
         <div style={{ marginTop: 10 }}>
-          <Button type='primary' htmlType='submit'>
+          <Button type='primary' htmlType='submit' loading={signUpLoading}>
             가입하기
           </Button>
         </div>
