@@ -28,6 +28,14 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
+// 로그아웃
+
+router.post('/user/logout', (req, res) => {
+  req.logout();
+  req.session.destroy();
+  res.send('ok');
+});
+
 // 회원가입
 
 router.post('/', async (req, res, next) => {
