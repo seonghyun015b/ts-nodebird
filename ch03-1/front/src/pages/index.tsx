@@ -8,7 +8,9 @@ import { MainPost } from '../reducers/post';
 
 const Home = () => {
   const { isLoggedIn } = useSelector((state: RootState) => state.user);
-  const { mainPosts } = useSelector((state: RootState) => state.post);
+  const { mainPosts }: { mainPosts: MainPost[] } = useSelector(
+    (state: RootState) => state.post
+  );
 
   // const selected = useSelector((state) => state.post.mainPosts);
   console.log('se', mainPosts);

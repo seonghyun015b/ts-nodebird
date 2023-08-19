@@ -18,7 +18,9 @@ const PostForm = () => {
     }
   }, [imageInput.current]);
 
-  const { imagePaths } = useSelector((state: RootState) => state.post);
+  const { imagePaths }: { imagePaths: string[] } = useSelector(
+    (state: RootState) => state.post
+  );
 
   const [text, setText] = useState('');
   const onChangeText = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
