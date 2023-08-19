@@ -12,8 +12,6 @@ const Home = () => {
     (state: RootState) => state.post
   );
 
-  // const selected = useSelector((state) => state.post.mainPosts);
-  console.log('se', mainPosts);
   return (
     <AppLayout>
       {isLoggedIn && <PostForm />}
