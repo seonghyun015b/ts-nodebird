@@ -10,8 +10,6 @@ const UserProfile = () => {
 
   const { me, logOutLoading } = useSelector((state: RootState) => state.user);
 
-  console.log(me?.Posts.length, me.Posts);
-
   const onLogOut = useCallback(() => {
     dispatch(logoutRequestAction());
   }, []);
