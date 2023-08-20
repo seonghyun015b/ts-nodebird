@@ -1,4 +1,11 @@
-import { all, delay, fork, put, takeEvery } from 'redux-saga/effects';
+import {
+  all,
+  delay,
+  fork,
+  put,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects';
 import {
   // 로그인
   LOG_IN_FAILURE,
@@ -37,7 +44,7 @@ function* logIn(action: any) {
 }
 
 function* watchLogIn() {
-  yield takeEvery(LOG_IN_REQUEST, logIn);
+  yield takeLatest(LOG_IN_REQUEST, logIn);
 }
 
 // 로그아웃
@@ -57,7 +64,7 @@ function* logOut() {
 }
 
 function* watchLogOut() {
-  yield takeEvery(LOG_OUT_REQUEST, logOut);
+  yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 
 // 회원가입
@@ -77,7 +84,7 @@ function* signUp() {
 }
 
 function* watchSignUp() {
-  yield takeEvery(SIGN_UP_REQUEST, signUp);
+  yield takeLatest(SIGN_UP_REQUEST, signUp);
 }
 
 // 팔로우
@@ -98,7 +105,7 @@ function* follow(action) {
 }
 
 function* watchFollow() {
-  yield takeEvery(FOLLOW_REQUEST, follow);
+  yield takeLatest(FOLLOW_REQUEST, follow);
 }
 
 // 언팔로우
@@ -119,7 +126,7 @@ function* unfollow(action) {
 }
 
 function* watchUnFollow() {
-  yield takeEvery(UNFOLLOW_REQUEST, unfollow);
+  yield takeLatest(UNFOLLOW_REQUEST, unfollow);
 }
 
 export default function* userSaga() {
