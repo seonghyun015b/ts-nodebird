@@ -62,7 +62,7 @@ export interface LoginData {
 
 export interface LoginRequestAction {
   type: typeof LOG_IN_REQUEST;
-  data: LoginData | DummyData;
+  data: { email: string; password: string };
 }
 
 export interface LoginSuccessAction {
@@ -237,14 +237,14 @@ export const initialState: UserState = {
   loginData: {},
 };
 
-export const loginRequestAction = (data: LoginData): LoginRequestAction => {
+export const loginRequestAction = (data: LoginData): UserAction => {
   return {
     type: LOG_IN_REQUEST,
     data,
   };
 };
 
-export const logoutRequestAction = (): LogoutRequestAction => {
+export const logoutRequestAction = (): UserAction => {
   return {
     type: LOG_OUT_REQUEST,
   };
