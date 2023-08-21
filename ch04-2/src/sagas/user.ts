@@ -1,11 +1,4 @@
-import {
-  all,
-  delay,
-  fork,
-  put,
-  takeEvery,
-  takeLatest,
-} from 'redux-saga/effects';
+import { all, delay, fork, put, takeLatest } from 'redux-saga/effects';
 import {
   // 로그인
   LOG_IN_FAILURE,
