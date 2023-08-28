@@ -1,11 +1,11 @@
 import {
   AddCommentRequestAction,
   AddPostRequestAction,
-  IMainPost,
   LoadPostRequestAction,
 } from './../reducers/post';
 
 import { all, call, delay, fork, put, takeLatest } from 'redux-saga/effects';
+
 import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
@@ -26,7 +26,7 @@ import axios, { AxiosResponse } from 'axios';
 
 // 게시글 로드
 
-function loadPostAPI(data: number) {
+function loadPostAPI(data) {
   return axios.get('/posts', data);
 }
 
@@ -52,7 +52,7 @@ function* watchLoadPost() {
 
 // 게시글 추가
 
-function addPostAPI(data: string) {
+function addPostAPI(data) {
   return axios.post('/post', { content: data });
 }
 
