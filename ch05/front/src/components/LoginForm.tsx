@@ -1,12 +1,11 @@
-import React, { useCallback } from 'react';
 import { Button, Form, Input } from 'antd';
+import useInput from '../hooks/useInput';
 import Link from 'next/link';
 import styled from 'styled-components';
-import useInput from '../hooks/useInput';
-
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginRequestAction } from '../reducers/user';
-import { RootState } from '../reducers/type';
+import { RootState } from '../reducers';
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -19,13 +18,20 @@ const FormWrapper = styled(Form)`
 const LoginForm = () => {
   const dispatch = useDispatch();
 
-  const { logInLoading } = useSelector((state: RootState) => state.user);
+  const { logInLoading, logInError } = useSelector(
+    (state: RootState) => state.user
+  );
 
-  const [email, onChangeEmail] = useInput('');
+  useEffect(() => {
+    if (logInError) {
+      alert(logInError);
+    }
+  }, [logInError]);
+
+  const [email, onChangeId] = useInput('');
   const [password, onChangePassword] = useInput('');
 
   const onSubmitForm = useCallback(() => {
-    console.log(email, password);
     dispatch(loginRequestAction({ email, password }));
   }, [email, password]);
 
@@ -33,13 +39,12 @@ const LoginForm = () => {
     <>
       <FormWrapper onFinish={onSubmitForm}>
         <div>
-          <label htmlFor='user-email'>이메일</label>
+          <label htmlFor='user-email'>아이디</label>
           <br />
           <Input
             name='user-email'
-            type='email'
             value={email}
-            onChange={onChangeEmail}
+            onChange={onChangeId}
             required
           />
         </div>

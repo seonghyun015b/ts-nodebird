@@ -1,34 +1,44 @@
-import { all, delay, fork, put, takeLatest } from 'redux-saga/effects';
-import shortId from 'shortid';
-
 import {
-  ADD_COMMENT_FAILURE,
-  ADD_COMMENT_REQUEST,
-  ADD_COMMENT_SUCCESS,
-  ADD_POST_FAILURE,
+  AddCommentRequestAction,
+  AddPostRequestAction,
+  IMainPost,
+  LoadPostRequestAction,
+} from './../reducers/post';
+
+import { all, call, delay, fork, put, takeLatest } from 'redux-saga/effects';
+import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
-  REMOVE_POST_FAILURE,
-  REMOVE_POST_REQUEST,
-  REMOVE_POST_SUCCESS,
+  ADD_POST_FAILURE,
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
   LOAD_POST_FAILURE,
-  generateDummyPost,
+  REMOVE_POST_REQUEST,
+  REMOVE_POST_SUCCESS,
+  REMOVE_POST_FAILURE,
+  ADD_COMMENT_REQUEST,
+  ADD_COMMENT_SUCCESS,
+  ADD_COMMENT_FAILURE,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
+import axios, { AxiosResponse } from 'axios';
 
-function* loadPost() {
+// 게시글 로드
+
+function loadPostAPI(data: number) {
+  return axios.get('/posts', data);
+}
+
+function* loadPost(action: LoadPostRequestAction) {
   try {
-    // const result = yield call(addPostAPI, action.data);
-    yield delay(1000);
-    const id = shortId.generate();
+    const result: AxiosResponse = yield call(loadPostAPI, action.data);
+
     yield put({
       type: LOAD_POST_SUCCESS,
-      data: generateDummyPost(10),
+      data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     yield put({
       type: LOAD_POST_FAILURE,
       data: err.response.data,
@@ -36,22 +46,28 @@ function* loadPost() {
   }
 }
 
-function* addPost(action) {
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
+// 게시글 추가
+
+function addPostAPI(data: string) {
+  return axios.post('/post', { content: data });
+}
+
+function* addPost(action: AddPostRequestAction) {
   try {
-    yield delay(1000);
-    const id = shortId.generate();
+    const result: AxiosResponse = yield call(addPostAPI, action.data);
     yield put({
       type: ADD_POST_SUCCESS,
-      data: {
-        id,
-        content: action.data,
-      },
+      data: result.data,
     });
     yield put({
       type: ADD_POST_TO_ME,
-      data: id,
+      data: result.data.id,
     });
-  } catch (err) {
+  } catch (err: any) {
     yield put({
       type: ADD_POST_FAILURE,
       data: err.response.data,
@@ -59,21 +75,11 @@ function* addPost(action) {
   }
 }
 
-// comment
-function* addComment(action) {
-  try {
-    yield delay(1000);
-    yield put({
-      type: ADD_COMMENT_SUCCESS,
-      data: action.data,
-    });
-  } catch (err) {
-    yield put({
-      type: ADD_COMMENT_FAILURE,
-      data: err.response.data,
-    });
-  }
+function* watchAddPost() {
+  yield takeLatest(ADD_POST_REQUEST, addPost);
 }
+
+// 게시글 삭제
 
 function* removePost(action) {
   try {
@@ -86,8 +92,7 @@ function* removePost(action) {
       type: REMOVE_POST_OF_ME,
       data: action.data,
     });
-    yield console.log('delete saga', action.data);
-  } catch (err) {
+  } catch (err: any) {
     yield put({
       type: REMOVE_POST_FAILURE,
       data: err.response.data,
@@ -95,20 +100,37 @@ function* removePost(action) {
   }
 }
 
-function* watchLoadPost() {
-  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+function* watchRemovePost() {
+  yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
 
-function* watchAddPost() {
-  yield takeLatest(ADD_POST_REQUEST, addPost);
+// 댓글 추가
+
+function addCommentAPI(data: {
+  content: string;
+  postId: number;
+  userId: number;
+}) {
+  return axios.post(`/post/${data.postId}/comment`, data);
+}
+
+function* addComment(action: AddCommentRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(addCommentAPI, action.data);
+    yield put({
+      type: ADD_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: ADD_COMMENT_FAILURE,
+      data: err.response.data,
+    });
+  }
 }
 
 function* watchCommentPost() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
-}
-
-function* watchRemovePost() {
-  yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
 
 export default function* postSaga() {

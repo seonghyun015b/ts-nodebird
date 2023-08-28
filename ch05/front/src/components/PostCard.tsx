@@ -1,6 +1,15 @@
 import React, { useState, useCallback } from 'react';
+
+import { IMainPost, REMOVE_POST_REQUEST } from '../reducers/post';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../reducers';
+import { styled } from 'styled-components';
+import { Avatar, Button, Card, List, Popover } from 'antd';
+
 import PostImages from './PostImages';
-import { Card, Popover, Button, Avatar, List } from 'antd';
+import PostCardContent from './PostCardContent';
+import CommentForm from './CommentForm';
+
 import {
   EllipsisOutlined,
   HeartOutlined,
@@ -8,21 +17,20 @@ import {
   MessageOutlined,
   RetweetOutlined,
 } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { Posts, RootState } from '../reducers/type';
-import CommentForm from './CommentForm';
-import PostCardContent from './PostCardContent';
-import { REMOVE_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 interface PostCardProp {
-  post: Posts;
+  post: IMainPost;
 }
 
-const PostCard = ({ post }: PostCardProp) => {
-  console.log('post added', post.id);
+const PostCardWrap = styled.div`
+  margin-bottom: 20px;
+`;
 
+const PostCard = ({ post }: PostCardProp) => {
   const id = useSelector((state: RootState) => state.user.me?.id);
+  console.log('id', id);
+
   const { removePostLoading } = useSelector((state: RootState) => state.post);
 
   const dispatch = useDispatch();
@@ -32,8 +40,7 @@ const PostCard = ({ post }: PostCardProp) => {
     setLiked((prev) => !prev);
   }, []);
 
-  const [commentFormOpenend, setCommentFormOpened] = useState(false);
-
+  const [commentFormOpened, setCommentFormOpened] = useState(false);
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   }, []);
@@ -46,7 +53,7 @@ const PostCard = ({ post }: PostCardProp) => {
   }, []);
 
   return (
-    <div style={{ marginBottom: 20 }}>
+    <PostCardWrap>
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
@@ -65,7 +72,7 @@ const PostCard = ({ post }: PostCardProp) => {
             key='more'
             content={
               <Button.Group>
-                {id && post.User.id === id ? (
+                {id && post.User.id === Number(id) ? (
                   <>
                     <Button>수정</Button>
                     <Button
@@ -93,7 +100,7 @@ const PostCard = ({ post }: PostCardProp) => {
           description={<PostCardContent postData={post.content} />}
         />
       </Card>
-      {commentFormOpenend && (
+      {commentFormOpened && (
         <div>
           <CommentForm post={post} />
           <List
@@ -112,7 +119,7 @@ const PostCard = ({ post }: PostCardProp) => {
           />
         </div>
       )}
-    </div>
+    </PostCardWrap>
   );
 };
 

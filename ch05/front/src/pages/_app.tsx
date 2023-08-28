@@ -1,12 +1,12 @@
-import Head from 'next/head';
 import React, { ElementType } from 'react';
+import Head from 'next/head';
 import wrapper from '../store/configureStore';
 
-interface NodeBirdProps {
+interface NodeBirdProp {
   Component: ElementType;
 }
 
-const NodeBird = ({ Component }: NodeBirdProps) => {
+const NodeBird = ({ Component }: NodeBirdProp) => {
   return (
     <>
       <Head>

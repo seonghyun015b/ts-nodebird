@@ -1,9 +1,9 @@
 {
-  "name": "front",
+  "name": "ts-redux",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4000",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,15 +11,19 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@faker-js/faker": "^6.3.1",
-    "@types/node": "20.4.5",
-    "@types/react": "18.2.18",
+    "@types/node": "20.5.0",
+    "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
+    "@types/react-redux": "^7.1.25",
+    "@types/react-slick": "^0.23.10",
+    "@types/redux": "^3.6.0",
+    "@types/redux-saga": "^0.10.5",
     "antd": "^5.8.0",
     "axios": "^1.4.0",
-    "eslint": "8.46.0",
-    "eslint-config-next": "13.4.12",
+    "eslint": "8.47.0",
+    "eslint-config-next": "13.4.16",
     "immer": "^10.0.2",
-    "next": "13.4.12",
+    "next": "13.4.16",
     "next-redux-wrapper": "^8.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -33,7 +37,6 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@types/react-slick": "^0.23.10",
     "@types/shortid": "^0.0.29"
   }
 }

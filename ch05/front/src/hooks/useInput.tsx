@@ -12,7 +12,7 @@ type InputHook = [
   Dispatch<SetStateAction<string>>
 ];
 
-export default (initialValue: string): InputHook => {
+const useInput = (initialValue: string): InputHook => {
   const [value, setValue] = useState(initialValue);
   const handler = useCallback(
     (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
@@ -22,3 +22,5 @@ export default (initialValue: string): InputHook => {
   );
   return [value, handler, setValue];
 };
+
+export default useInput;

@@ -11,12 +11,12 @@ import {
   Global,
 } from './styles';
 
-interface ImagesZoomProps {
+interface ImageZoomProp {
   images: { src: string }[];
   onClose: () => void;
 }
 
-const ImagesZoom = ({ images, onClose }: ImagesZoomProps) => {
+const ImageZoom = ({ images, onClose }: ImageZoomProp) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   return (
@@ -55,4 +55,4 @@ const ImagesZoom = ({ images, onClose }: ImagesZoomProps) => {
   );
 };
 
-export default ImagesZoom;
+export default ImageZoom;

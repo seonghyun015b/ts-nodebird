@@ -1,14 +1,12 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState, useEffect } from 'react';
 import Head from 'next/head';
-import { Button, Checkbox, Form, Input } from 'antd';
+import AppLayout from '../components/AppLayout';
+import { Form, Input, Checkbox, Button } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { styled } from 'styled-components';
-
-import AppLayout from '../components/AppLayout';
 import useInput from '../hooks/useInput';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../reducers/type';
+import { RootState } from '../reducers';
 import { SIGN_UP_REQUEST } from '../reducers/user';
 import Router from 'next/router';
 
@@ -16,12 +14,22 @@ const ErrorMessage = styled.div`
   color: red;
 `;
 
+const ButtonWrapper = styled.div`
+  margin-top: 10px;
+`;
+
 const Signup = () => {
   const dispatch = useDispatch();
 
-  const { signUpLoading, signUpDone, signUpError } = useSelector(
+  const { signUpLoading, signUpDone, signUpError, me } = useSelector(
     (state: RootState) => state.user
   );
+
+  useEffect(() => {
+    if (me && me.id) {
+      Router.replace('/');
+    }
+  }, [me && me.id]);
 
   useEffect(() => {
     if (signUpDone) {
@@ -67,12 +75,11 @@ const Signup = () => {
       return setTermError(true);
     }
     console.log(email, password, nickname);
-
     dispatch({
       type: SIGN_UP_REQUEST,
-      data: { email, nickname, password },
+      data: { email, password, nickname },
     });
-  }, [password, passwordCheck, term]);
+  }, [email, password, passwordCheck, term]);
 
   return (
     <AppLayout>
@@ -85,7 +92,6 @@ const Signup = () => {
           <br />
           <Input
             name='user-email'
-            type='email'
             value={email}
             onChange={onChangeEmail}
             required
@@ -118,6 +124,7 @@ const Signup = () => {
           <Input
             name='user-password-check'
             type='password'
+            value={passwordCheck}
             onChange={onChangePasswordCheck}
             required
           />
@@ -127,15 +134,15 @@ const Signup = () => {
         </div>
         <div>
           <Checkbox name='user-term' checked={term} onChange={onChangeTerm}>
-            약관에 동의하세요.
+            약관에 동의하세요
           </Checkbox>
           {termError && <ErrorMessage>약관에 동의하셔야 합니다.</ErrorMessage>}
         </div>
-        <div style={{ marginTop: 10 }}>
+        <ButtonWrapper>
           <Button type='primary' htmlType='submit' loading={signUpLoading}>
             가입하기
           </Button>
-        </div>
+        </ButtonWrapper>
       </Form>
     </AppLayout>
   );

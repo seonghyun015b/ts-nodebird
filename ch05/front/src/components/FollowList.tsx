@@ -1,17 +1,12 @@
-import React from 'react';
-import { Button, Card, List } from 'antd';
 import { StopOutlined } from '@ant-design/icons';
+import { Button, Card, List } from 'antd';
 
-interface DataObj {
-  nickname: string;
-}
-
-interface FollowListProps {
+interface FollowListProp {
   header: string;
-  data: DataObj[];
+  data: { nickname: string }[];
 }
 
-const FollowList = ({ header, data }: FollowListProps) => {
+const FollowList = ({ header, data }: FollowListProp) => {
   return (
     <List
       style={{ marginBottom: '20px' }}
@@ -26,7 +21,7 @@ const FollowList = ({ header, data }: FollowListProps) => {
       bordered
       dataSource={data}
       renderItem={(item) => (
-        <List.Item style={{ marginTop: '20px' }}>
+        <List.Item>
           <Card actions={[<StopOutlined key='stop' />]}>
             <Card.Meta description={item.nickname} />
           </Card>

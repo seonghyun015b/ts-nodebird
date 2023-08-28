@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
+import ImageZoom from './ImageZoom';
 import { PlusOutlined } from '@ant-design/icons';
 
-import ImagesZoom from './ImagesZoom';
-
-interface PostImages {
+interface PostImagesProp {
   images: { src: string }[];
 }
 
-const PostImages = ({ images }: PostImages) => {
+const PostImages = ({ images }: PostImagesProp) => {
   const [showImageZoom, setShowImageZoom] = useState(false);
 
   const onZoom = useCallback(() => {
@@ -27,32 +26,31 @@ const PostImages = ({ images }: PostImages) => {
           alt={images[0].src}
           onClick={onZoom}
         />
-        {showImageZoom && <ImagesZoom images={images} onClose={onClose} />}
+        {showImageZoom && <ImageZoom images={images} onClose={onClose} />}
       </>
     );
   }
 
   if (images.length === 2) {
-    return (
-      <>
-        <img
-          role='presentation'
-          style={{ width: '50%', display: 'inline-block' }}
-          src={images[0].src}
-          alt={images[0].src}
-          onClick={onZoom}
-        />
-        <img
-          role='presentation'
-          style={{ width: '50%', display: 'inline-block' }}
-          src={images[1].src}
-          alt={images[1].src}
-          onClick={onZoom}
-        />
-        {showImageZoom && <ImagesZoom images={images} onClose={onClose} />}
-      </>
-    );
+    <>
+      <img
+        role='presentation'
+        style={{ width: '50%', display: 'inline-block' }}
+        src={images[0].src}
+        alt={images[0].src}
+        onClick={onZoom}
+      />
+      <img
+        role='presentation'
+        style={{ width: '50%', display: 'inline-block' }}
+        src={images[1].src}
+        alt={images[1].src}
+        onClick={onZoom}
+      />
+      {showImageZoom && <ImageZoom images={images} onClose={onClose} />}
+    </>;
   }
+
   return (
     <>
       <div>
@@ -78,7 +76,7 @@ const PostImages = ({ images }: PostImages) => {
           {images.length - 1}개의 사진 더보기
         </div>
       </div>
-      {showImageZoom && <ImagesZoom images={images} onClose={onClose} />}
+      {showImageZoom && <ImageZoom images={images} onClose={onClose} />}
     </>
   );
 };

@@ -1,11 +1,13 @@
 import React, { useCallback } from 'react';
 import { Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../reducers';
+import { IMainPost } from '../reducers/post';
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from '../reducers/user';
-import { Posts, RootState } from '../reducers/type';
 
 interface FollowButtonProp {
-  post: Posts;
+  post: IMainPost;
 }
 
 const FollowButton = ({ post }: FollowButtonProp) => {

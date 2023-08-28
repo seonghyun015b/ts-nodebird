@@ -1,18 +1,16 @@
-import React, { useMemo } from 'react';
-import Link from 'next/link';
-import { Col, Input, Menu, Row } from 'antd';
-
-import LoginForm from './LoginForm';
-import UserProfile from './UserProfile';
+import React, { ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import Link from 'next/link';
+import UserProfile from './UserProfile';
+import LoginForm from './LoginForm';
+import { Menu, Input, Row, Col } from 'antd';
+import { RootState } from '../reducers';
 
-import { RootState } from '../reducers/type.d';
-
-interface AppLayout {
-  children: React.ReactNode;
+interface AppLayoutProp {
+  children: ReactNode;
 }
 
-const AppLayout = ({ children }: AppLayout) => {
+const AppLayout = ({ children }: AppLayoutProp) => {
   const { me } = useSelector((state: RootState) => state.user);
 
   const inputStyle = useMemo(() => ({ verticalAlign: 'middle' }), []);

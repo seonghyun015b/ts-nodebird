@@ -10,6 +10,10 @@
 
 "redux-saga": "1.2.3",
 
+## Immer
+
+"immer": "10.0.2",
+
 ## 리액트 슬릭
 
 "react-slick": "0.29.0",
