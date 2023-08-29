@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { all, call, delay, fork, put, takeLatest } from 'redux-saga/effects';
+import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import {
   // 유저 정보 불러오기
   LOAD_MY_INFO_REQUEST,
@@ -25,10 +25,12 @@ import {
   UNFOLLOW_SUCCESS,
   UNFOLLOW_FAILURE,
   UNFOLLOW_REQUEST,
-  signupRequestAction,
   LoginRequestAction,
   UserData,
   LoginData,
+  FollowRequestAction,
+  SignupRequestAction,
+  UnfollowRequestAction,
 } from '../reducers/user';
 
 // 유저 정보 불러오기
@@ -115,7 +117,7 @@ function signUpAPI(data: {
   return axios.post('/user', data);
 }
 
-function* signUp(action: signupRequestAction) {
+function* signUp(action: SignupRequestAction) {
   try {
     const result: AxiosResponse<string> = yield call(signUpAPI, action.data);
     yield put({
@@ -135,12 +137,16 @@ function* watchSignUp() {
 
 // 팔로우
 
-function* follow(action) {
+function followAPI(data: number) {
+  return axios.patch(`/user/${data}/follow`);
+}
+
+function* follow(action: FollowRequestAction) {
   try {
-    yield delay(1000);
+    const result: AxiosResponse = yield call(followAPI, action.data);
     yield put({
       type: FOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err: any) {
     yield put({
@@ -156,12 +162,16 @@ function* watchFollow() {
 
 // 언팔로우
 
-function* unfollow(action) {
+function unfollowAPI(data: number) {
+  return axios.delete(`/user/${data}/follow`);
+}
+
+function* unfollow(action: UnfollowRequestAction) {
   try {
-    yield delay(1000);
+    const result: AxiosResponse = yield call(unfollowAPI, action.data);
     yield put({
       type: UNFOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (err: any) {
     yield put({

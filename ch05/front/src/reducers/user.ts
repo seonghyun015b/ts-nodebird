@@ -29,6 +29,10 @@ export const FOLLOW_FAILURE = 'FOLLOW_FAILURE';
 export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
+// 팔로우 삭제
+export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST';
+export const REMOVE_FOLLOWER_SUCCESS = 'REMOVE_FOLLOWER_SUCCESS';
+export const REMOVE_FOLLOWER_FAILURE = 'REMOVE_FOLLOWER_FAILURE';
 
 // 게시글 추가,삭제
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
@@ -63,6 +67,10 @@ export interface UserState {
   unfollowLoading: boolean;
   unfollowDone: boolean;
   unfollowError: boolean | null | string;
+  // 팔로워 삭제
+  removeFollowerLoading: boolean;
+  removeFollowerDone: boolean;
+  removeFollowerError: string | null;
   me: null | UserData | LoadMyInfoSuccessData;
   signUpData: {};
   loginData: {};
@@ -96,8 +104,8 @@ export interface UserData {
   email: string;
   nickname: string;
   Posts: IMainPost[];
-  Followings: Array<{ id: number; nickname?: string; Follow?: FollowType[] }>;
-  Followers: Array<{ id: number; nickname?: string; Follow?: FollowType[] }>;
+  Followings: { id: number; nickname?: string; Follow?: FollowType[] }[];
+  Followers: { id: number; nickname?: string; Follow?: FollowType[] }[];
   createdAt: string;
   updatedAt: string;
 }
@@ -152,75 +160,94 @@ export interface LogoutFailureAction {
 
 // 팔로우
 
-export interface followRequestAction {
+export interface FollowRequestAction {
   type: typeof FOLLOW_REQUEST;
+  data: number;
 }
 
-export interface followSuccessAction {
+export interface FollowSuccessAction {
   type: typeof FOLLOW_SUCCESS;
   data: { UserId: number };
 }
 
-export interface followFailureAction {
+export interface FollowFailureAction {
   type: typeof FOLLOW_FAILURE;
   error: string;
 }
 
 // 언팔로우
 
-export interface unfollowRequestAction {
+export interface UnfollowRequestAction {
   type: typeof UNFOLLOW_REQUEST;
+  data: number;
 }
 
-export interface unfollowSuccessAction {
+export interface UnfollowSuccessAction {
   type: typeof UNFOLLOW_SUCCESS;
   data: { UserId: number };
 }
 
-export interface unfollowFailureAction {
+export interface UnfollowFailureAction {
   type: typeof UNFOLLOW_FAILURE;
+  error: string;
+}
+
+// 팔로워 삭제
+
+export interface RemoveFollowerRequestAction {
+  type: typeof REMOVE_FOLLOWER_REQUEST;
+  data: number;
+}
+
+export interface RemoveFollowerSuccessAction {
+  type: typeof REMOVE_FOLLOWER_SUCCESS;
+  data: { UserId: number };
+}
+
+export interface RemoveFollowerFailureAction {
+  type: typeof REMOVE_FOLLOWER_FAILURE;
   error: string;
 }
 
 // 회원가입
 
-export interface signupRequestAction {
+export interface SignupRequestAction {
   type: typeof SIGN_UP_REQUEST;
   data: { email: string; password: string; nickname: string };
 }
 
-export interface signupSuccessAction {
+export interface SignupSuccessAction {
   type: typeof SIGN_UP_SUCCESS;
 }
 
-export interface signupFailureAction {
+export interface SignupFailureAction {
   type: typeof SIGN_UP_FAILURE;
   error: string;
 }
 
 // 닉네임 변경
 
-export interface changeNickNameRequestAction {
+export interface ChangeNickNameRequestAction {
   type: typeof CHANGE_NICKNAME_REQUEST;
 }
 
-export interface changeNickNameSuccessAction {
+export interface ChangeNickNameSuccessAction {
   type: typeof CHANGE_NICKNAME_SUCCESS;
 }
 
-export interface changeNickNameFailureAction {
+export interface ChangeNickNameFailureAction {
   type: typeof CHANGE_NICKNAME_FAILURE;
   error: string;
 }
 
 // 게시글 추가, 삭제
 
-export interface addPostAction {
+export interface AddPostToMeAction {
   type: typeof ADD_POST_TO_ME;
   data: IMainPost;
 }
 
-export interface removePostAction {
+export interface RemovePostOfMeAction {
   type: typeof REMOVE_POST_OF_ME;
   data: number;
 }
@@ -239,24 +266,28 @@ export type UserAction =
   | LogoutSuccessAction
   | LogoutFailureAction
   // 팔로우
-  | followRequestAction
-  | followSuccessAction
-  | followFailureAction
+  | FollowRequestAction
+  | FollowSuccessAction
+  | FollowFailureAction
   // 언팔로우
-  | unfollowRequestAction
-  | unfollowSuccessAction
-  | unfollowFailureAction
+  | UnfollowRequestAction
+  | UnfollowSuccessAction
+  | UnfollowFailureAction
   // 회원가입
-  | signupRequestAction
-  | signupSuccessAction
-  | signupFailureAction
+  | SignupRequestAction
+  | SignupSuccessAction
+  | SignupFailureAction
   // 닉네임 변경
-  | changeNickNameRequestAction
-  | changeNickNameSuccessAction
-  | changeNickNameFailureAction
+  | ChangeNickNameRequestAction
+  | ChangeNickNameSuccessAction
+  | ChangeNickNameFailureAction
+  // 팔로워 삭제
+  | RemoveFollowerRequestAction
+  | RemoveFollowerSuccessAction
+  | RemoveFollowerFailureAction
   // 추가, 삭제
-  | addPostAction
-  | removePostAction;
+  | AddPostToMeAction
+  | RemovePostOfMeAction;
 
 export interface DummyData {
   nickname: string;
@@ -299,6 +330,10 @@ export const initialState: UserState = {
   unfollowLoading: false,
   unfollowDone: false,
   unfollowError: false,
+  // 팔로워 삭제
+  removeFollowerLoading: false,
+  removeFollowerDone: false,
+  removeFollowerError: null,
   me: null,
   signUpData: {},
   loginData: {},
@@ -307,18 +342,29 @@ export const initialState: UserState = {
 export const loginRequestAction = (data: {
   email: string;
   password: string;
-}): LoginRequestAction => {
-  return {
-    type: LOG_IN_REQUEST,
-    data,
-  };
-};
+}) => ({
+  type: LOG_IN_REQUEST,
+  data,
+});
 
-export const logoutRequestAction = (): LogoutRequestAction => {
-  return {
-    type: LOG_OUT_REQUEST,
-  };
-};
+export const logoutRequestAction = () => ({
+  type: LOG_OUT_REQUEST,
+});
+
+export const followRequestAction = (data: number) => ({
+  type: FOLLOW_REQUEST,
+  data,
+});
+
+export const unfollowRequesAction = (data: number) => ({
+  type: UNFOLLOW_REQUEST,
+  data,
+});
+
+export const removeFollowerRequestAction = (data: number) => ({
+  type: REMOVE_FOLLOWER_REQUEST,
+  data,
+});
 
 const reducer = (state = initialState, action: UserAction) => {
   return produce(state, (draft) => {
@@ -436,6 +482,27 @@ const reducer = (state = initialState, action: UserAction) => {
       case CHANGE_NICKNAME_FAILURE:
         draft.changeNicknameLoading = false;
         draft.changeNicknameError = action.error;
+        break;
+
+      // 팔로워 차단
+
+      case REMOVE_FOLLOWER_REQUEST:
+        draft.removeFollowerLoading = true;
+        draft.removeFollowerError = null;
+        draft.removeFollowerDone = false;
+        break;
+      case REMOVE_FOLLOWER_SUCCESS:
+        if (draft.me) {
+          draft.me.Followers = draft.me.Followers.filter(
+            (v) => v.id !== action.data.UserId
+          );
+        }
+        draft.removeFollowerLoading = false;
+        draft.removeFollowerDone = true;
+        break;
+      case REMOVE_FOLLOWER_FAILURE:
+        draft.removeFollowerLoading = false;
+        draft.removeFollowerError = action.error;
         break;
 
       // 게시글 추가
