@@ -1,87 +1,5 @@
 import { produce } from 'immer';
 
-export interface IMainPost {
-  id: number;
-  UserId: number;
-  User: { id: number; nickname: string };
-  content: string;
-  Images: { id: string; src: string }[];
-  Comments: {
-    id: number;
-    content: string;
-    UserId: number;
-    PostId: number;
-    createdAt: string;
-    updatedAt: string;
-    User: { id: number; nickname: string };
-  }[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface PostState {
-  mainPosts: IMainPost[];
-  imagePaths: string[];
-  postAdded: boolean;
-
-  addPostLoading: boolean;
-  addPostDone: boolean;
-  addPostError: string | null;
-
-  loadPostsLoading: boolean;
-  loadPostsDone: boolean;
-  loadPostsError: string | null;
-
-  removePostLoading: boolean;
-  removePostDone: boolean;
-  removePostError: string | null;
-
-  addCommentLoading: boolean;
-  addCommentDone: boolean;
-  addCommentError: string | null;
-
-  hasMorePosts: boolean;
-}
-
-export const initialState: PostState = {
-  mainPosts: [],
-  imagePaths: [],
-  postAdded: false,
-
-  // 게시글 추가
-  addPostLoading: false,
-  addPostDone: false,
-  addPostError: null,
-
-  // 게시글 로딩
-  loadPostsLoading: false,
-  loadPostsDone: false,
-  loadPostsError: null,
-
-  // 게시글 삭제
-  removePostLoading: false,
-  removePostDone: false,
-  removePostError: null,
-
-  // 댓글 로딩
-  addCommentLoading: false,
-  addCommentDone: false,
-  addCommentError: null,
-
-  // 게시글 추가로딩
-  hasMorePosts: true,
-};
-
-export interface AddCommentSuccessData {
-  PostId: number;
-  User: { id: number; nickname: string };
-  UserId: number;
-  content: string;
-  createdAt: string;
-  id: number;
-  updatedAt: string;
-}
-
 // 게시글 로드
 export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
@@ -102,24 +20,16 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
-export const addPostRequestAction = (data: string) => ({
-  type: ADD_POST_REQUEST,
-  data,
-});
+// 좋아요
+export const LIKE_POST_REQUEST = 'LIKE_POST_REQUEST';
+export const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS';
+export const LIKE_POST_FAILURE = 'LIKE_POST_FAILURE';
 
-export const addCommentRequestAction = (data: {
-  content: string;
-  postId: number;
-  userId: number;
-}): PostAcionTypes => ({
-  type: ADD_COMMENT_REQUEST,
-  data,
-});
+// 싫어요
 
-export const loadPostRequestAction = (data: number) => ({
-  type: LOAD_POST_REQUEST,
-  data,
-});
+export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
+export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
+export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 
 // 게시글 로드 action type
 
@@ -188,6 +98,40 @@ export interface AddCommentFailureAction {
   error: string;
 }
 
+// 좋아요
+
+export interface LikePostRequestAction {
+  type: typeof LIKE_POST_REQUEST;
+  data: number;
+}
+
+export interface LikePostSuccessAction {
+  type: typeof LIKE_POST_SUCCESS;
+  data: { PostId: number; UserId: number };
+}
+
+export interface LikePostFailureAction {
+  type: typeof LIKE_POST_FAILURE;
+  error: string;
+}
+
+// 싫어요
+
+export interface UnLikePostRequestAction {
+  type: typeof UNLIKE_POST_REQUEST;
+  data: number;
+}
+
+export interface UnLikePostSuccessAction {
+  type: typeof UNLIKE_POST_SUCCESS;
+  data: { PostId: number; UserId: number };
+}
+
+export interface UnLikePostFailureAction {
+  type: typeof UNLIKE_POST_FAILURE;
+  error: string;
+}
+
 export type PostAcionTypes =
   // 게시글 로드
   | LoadPostRequestAction
@@ -204,7 +148,156 @@ export type PostAcionTypes =
   // 댓글 추가
   | AddCommentRequestAction
   | AddCommentSuccessAction
-  | AddCommentFailureAction;
+  | AddCommentFailureAction
+  // 좋아요
+  | LikePostRequestAction
+  | LikePostSuccessAction
+  | LikePostFailureAction
+  // 싫어요
+  | UnLikePostRequestAction
+  | UnLikePostSuccessAction
+  | UnLikePostFailureAction;
+
+export interface IMainPost {
+  id: number;
+  UserId: number;
+  User: { id: number; nickname: string };
+  content: string;
+  Images: { id: string; src: string }[];
+  Likers: {
+    id: number;
+    Like?: {
+      UserId: number;
+      PostId: number;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }[];
+  Comments: {
+    id: number;
+    content: string;
+    UserId: number;
+    PostId: number;
+    createdAt: string;
+    updatedAt: string;
+    User: { id: number; nickname: string };
+  }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PostState {
+  mainPosts: IMainPost[];
+  imagePaths: string[];
+  // 게시글 추가
+  addPostLoading: boolean;
+  addPostDone: boolean;
+  addPostError: string | null;
+  // 게시글 불러오기
+  loadPostsLoading: boolean;
+  loadPostsDone: boolean;
+  loadPostsError: string | null;
+  // 게시글 제거
+  removePostLoading: boolean;
+  removePostDone: boolean;
+  removePostError: string | null;
+  // 댓글 추가
+  addCommentLoading: boolean;
+  addCommentDone: boolean;
+  addCommentError: string | null;
+  //좋아요
+  likePostLoading: boolean;
+  likePostDone: boolean;
+  likePostError: string | null;
+  // 싫어요
+  unlikePostLoading: boolean;
+  unlikePostDone: boolean;
+  unlikePostError: string | null;
+
+  hasMorePosts: boolean;
+}
+
+export const initialState: PostState = {
+  mainPosts: [],
+  imagePaths: [],
+
+  // 게시글 추가
+  addPostLoading: false,
+  addPostDone: false,
+  addPostError: null,
+
+  // 게시글 불러오기
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
+
+  // 게시글 삭제
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: null,
+
+  // 댓글 로딩
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
+
+  // 좋아요
+  likePostLoading: false,
+  likePostDone: false,
+  likePostError: null,
+
+  // 싫어요
+  unlikePostLoading: false,
+  unlikePostDone: false,
+  unlikePostError: null,
+
+  // 게시글 추가로딩
+  hasMorePosts: true,
+};
+
+export interface AddCommentSuccessData {
+  PostId: number;
+  User: { id: number; nickname: string };
+  UserId: number;
+  content: string;
+  createdAt: string;
+  id: number;
+  updatedAt: string;
+}
+
+// 게시글 작성
+export const addPostRequestAction = (data: string) => ({
+  type: ADD_POST_REQUEST,
+  data,
+});
+
+// 댓글 작성
+export const addCommentRequestAction = (data: {
+  content: string;
+  postId: number;
+  userId: number;
+}): PostAcionTypes => ({
+  type: ADD_COMMENT_REQUEST,
+  data,
+});
+
+// 게시글 불러오기
+export const loadPostRequestAction = (data: number) => ({
+  type: LOAD_POST_REQUEST,
+  data,
+});
+
+// 좋아요
+export const likePostRequestAction = (data: number) => ({
+  type: LIKE_POST_REQUEST,
+  data,
+});
+
+// 싫어요
+export const unlikePostRequestAction = (data: number) => ({
+  type: UNLIKE_POST_REQUEST,
+  data,
+});
 
 const reducer = (state = initialState, action: PostAcionTypes) => {
   return produce(state, (draft) => {
@@ -275,6 +368,47 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
       case ADD_COMMENT_FAILURE:
         draft.addCommentLoading = false;
         draft.addCommentError = action.error;
+        break;
+
+      // 좋아요
+      case LIKE_POST_REQUEST:
+        draft.likePostLoading = true;
+        draft.likePostDone = false;
+        draft.likePostError = null;
+        break;
+      case LIKE_POST_SUCCESS: {
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        post?.Likers.push({ id: action.data.UserId });
+        draft.likePostLoading = false;
+        draft.likePostDone = true;
+        break;
+      }
+      case LIKE_POST_FAILURE:
+        draft.likePostLoading = false;
+        draft.likePostError = action.error;
+        break;
+
+      // 싫어요
+      case UNLIKE_POST_REQUEST:
+        draft.unlikePostLoading = true;
+        draft.unlikePostDone = false;
+        draft.unlikePostError = null;
+        break;
+      case UNLIKE_POST_SUCCESS: {
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        if (post) {
+          const index = post?.Likers.findIndex(
+            (v) => v.id === action.data.UserId
+          );
+          if (index !== -1) post?.Likers.splice(index, 1);
+        }
+        draft.unlikePostLoading = false;
+        draft.unlikePostDone = true;
+        break;
+      }
+      case UNLIKE_POST_FAILURE:
+        draft.unlikePostLoading = false;
+        draft.unlikePostError = action.error;
         break;
 
       default:

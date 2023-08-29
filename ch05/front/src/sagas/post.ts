@@ -1,11 +1,4 @@
-import {
-  AddCommentRequestAction,
-  AddPostRequestAction,
-  LoadPostRequestAction,
-} from './../reducers/post';
-
 import { all, call, delay, fork, put, takeLatest } from 'redux-saga/effects';
-
 import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
@@ -19,6 +12,18 @@ import {
   ADD_COMMENT_REQUEST,
   ADD_COMMENT_SUCCESS,
   ADD_COMMENT_FAILURE,
+  IMainPost,
+  LIKE_POST_FAILURE,
+  LIKE_POST_REQUEST,
+  LIKE_POST_SUCCESS,
+  UNLIKE_POST_REQUEST,
+  UNLIKE_POST_FAILURE,
+  UNLIKE_POST_SUCCESS,
+  LikePostRequestAction,
+  LoadPostRequestAction,
+  UnLikePostRequestAction,
+  AddCommentRequestAction,
+  AddPostRequestAction,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -26,7 +31,7 @@ import axios, { AxiosResponse } from 'axios';
 
 // 게시글 로드
 
-function loadPostAPI(data) {
+function loadPostAPI(data: number) {
   return axios.get('/posts', data);
 }
 
@@ -133,11 +138,63 @@ function* watchCommentPost() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
+// 좋아요
+
+function likePostAPI(data: number) {
+  return axios.patch(`/post/${data}/like`);
+}
+
+function* likePost(action: LikePostRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(likePostAPI, action.data);
+    yield put({
+      type: LIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: LIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+
+// 싫어요
+
+function unlikePostAPI(data: number) {
+  return axios.delete(`/post/${data}/like`);
+}
+
+function* unlikePost(action: UnLikePostRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(unlikePostAPI, action.data);
+    yield put({
+      type: UNLIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: UNLIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchUnLikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
     fork(watchRemovePost),
     fork(watchCommentPost),
     fork(watchLoadPost),
+    fork(watchLikePost),
+    fork(watchUnLikePost),
   ]);
 }
