@@ -96,7 +96,7 @@ export interface UserData {
   email: string;
   nickname: string;
   Posts: IMainPost[];
-  Followings: Array<{ id: number; nickname: string; Follow?: FollowType[] }>;
+  Followings: Array<{ id: number; nickname?: string; Follow?: FollowType[] }>;
   Followers: Array<{ id: number; nickname?: string; Follow?: FollowType[] }>;
   createdAt: string;
   updatedAt: string;
@@ -158,7 +158,7 @@ export interface followRequestAction {
 
 export interface followSuccessAction {
   type: typeof FOLLOW_SUCCESS;
-  data: number;
+  data: { UserId: number };
 }
 
 export interface followFailureAction {
@@ -174,7 +174,7 @@ export interface unfollowRequestAction {
 
 export interface unfollowSuccessAction {
   type: typeof UNFOLLOW_SUCCESS;
-  data: number;
+  data: { UserId: number };
 }
 
 export interface unfollowFailureAction {
@@ -380,9 +380,7 @@ const reducer = (state = initialState, action: UserAction) => {
         break;
       case FOLLOW_SUCCESS:
         draft.followLoading = false;
-        if (draft.me) {
-          draft.me.Followings.push({ id: action.data, nickname: 'dummy' });
-        }
+        draft.me?.Followings.push({ id: action.data.UserId });
         draft.followDone = true;
         break;
       case FOLLOW_FAILURE:
@@ -400,7 +398,7 @@ const reducer = (state = initialState, action: UserAction) => {
         draft.unfollowLoading = false;
         if (draft.me) {
           draft.me.Followings = draft.me.Followings.filter(
-            (v) => v.id !== action.data
+            (v) => v.id !== action.data.UserId
           );
         }
         draft.unfollowDone = true;
