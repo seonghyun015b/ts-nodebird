@@ -1,31 +1,60 @@
+import React, { useMemo } from 'react';
 import { StopOutlined } from '@ant-design/icons';
 import { Button, Card, List } from 'antd';
+import { useDispatch } from 'react-redux';
+import { styled } from 'styled-components';
+import { FollowType } from '../reducers/user';
+
+const ListItem = styled(List.Item)`
+  margin-top: 20px;
+`;
+
+const ListDiv = styled.div`
+  text-align: center;
+  margin: 10px 0;
+`;
+
+interface ListData {
+  id: number;
+  nickname?: string;
+  Follow?: FollowType[];
+}
 
 interface FollowListProp {
   header: string;
-  data: { nickname: string }[];
+  data: ListData[];
 }
 
 const FollowList = ({ header, data }: FollowListProp) => {
+  const listGrid = useMemo(() => ({ gutter: 4, xs: 2, md: 3 }), []);
+
+  const listStyle = useMemo(() => ({ marginBottom: 20 }), []);
+
+  const dispatch = useDispatch();
+
+  const onCancel = (id: number) => () => {};
+
   return (
-    <List
-      style={{ marginBottom: '20px' }}
-      grid={{ gutter: 4, xs: 2, md: 3 }}
+    <List<ListData>
+      style={listStyle}
+      grid={listGrid}
       size='small'
       header={<div>{header}</div>}
       loadMore={
-        <div style={{ textAlign: 'center', margin: '10px 0' }}>
+        <ListDiv>
           <Button>더 보기</Button>
-        </div>
+        </ListDiv>
       }
       bordered
       dataSource={data}
       renderItem={(item) => (
-        <List.Item>
-          <Card actions={[<StopOutlined key='stop' />]}>
+        <ListItem>
+          <Card
+            actions={[<StopOutlined key='stop' onClick={onCancel(item.id)} />]}
+          >
             <Card.Meta description={item.nickname} />
           </Card>
-        </List.Item>
+        </ListItem>
       )}
     />
   );
