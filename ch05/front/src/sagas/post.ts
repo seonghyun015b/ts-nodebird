@@ -1,4 +1,4 @@
-import { all, call, delay, fork, put, takeLatest } from 'redux-saga/effects';
+import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
@@ -89,12 +89,16 @@ function* watchAddPost() {
 
 // 게시글 삭제
 
+function removePostAPI(data: number) {
+  return axios.delete(`/post/${data}`);
+}
+
 function* removePost(action) {
   try {
-    yield delay(1000);
+    const result: AxiosResponse = yield call(removePostAPI, action.data);
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,

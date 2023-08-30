@@ -232,7 +232,7 @@ export interface LoadFollowersRequestAction {
 
 export interface LoadFollowersSuccessAction {
   type: typeof LOAD_FOLLOWERS_SUCCESS;
-  data: { id: number; nickname?: string; Follow?: FollowType[] };
+  data: { id: number; nickname?: string; Follow?: FollowType[] }[];
 }
 
 export interface LoadFollowersFailureAction {
@@ -248,7 +248,7 @@ export interface LoadFollowingsRequestAction {
 
 export interface LoadFollowingsSuccessAction {
   type: typeof LOAD_FOLLOWINGS_SUCCESS;
-  data: { id: number; nickname?: string; Follow?: FollowType[] };
+  data: { id: number; nickname?: string; Follow?: FollowType[] }[];
 }
 
 export interface LoadFollowingsFailureAction {
@@ -276,10 +276,12 @@ export interface SignupFailureAction {
 
 export interface ChangeNickNameRequestAction {
   type: typeof CHANGE_NICKNAME_REQUEST;
+  data: string;
 }
 
 export interface ChangeNickNameSuccessAction {
   type: typeof CHANGE_NICKNAME_SUCCESS;
+  data: { nickname: string };
 }
 
 export interface ChangeNickNameFailureAction {
@@ -402,6 +404,8 @@ export const initialState: UserState = {
   loginData: {},
 };
 
+// 로그인
+
 export const loginRequestAction = (data: {
   email: string;
   password: string;
@@ -410,32 +414,51 @@ export const loginRequestAction = (data: {
   data,
 });
 
+// 로그아웃
+
 export const logoutRequestAction = () => ({
   type: LOG_OUT_REQUEST,
 });
+
+// 팔로우
 
 export const followRequestAction = (data: number) => ({
   type: FOLLOW_REQUEST,
   data,
 });
 
+// 언팔로우
+
 export const unfollowRequesAction = (data: number) => ({
   type: UNFOLLOW_REQUEST,
   data,
 });
+
+// 팔로워 차단
 
 export const removeFollowerRequestAction = (data: number) => ({
   type: REMOVE_FOLLOWER_REQUEST,
   data,
 });
 
+// 팔로워 목록 로딩
+
 export const loadFollowersRequestAction = (data: number) => ({
   type: LOAD_FOLLOWERS_REQUEST,
   data,
 });
 
+// 팔로잉 목록 로딩
+
 export const loadFollowingsRequestAction = () => ({
   type: LOAD_FOLLOWINGS_REQUEST,
+});
+
+// 닉네임 변경
+
+export const changeNicknameRequestAction = (data: string) => ({
+  type: CHANGE_NICKNAME_REQUEST,
+  data,
 });
 
 const reducer = (state = initialState, action: UserAction) => {
@@ -548,6 +571,9 @@ const reducer = (state = initialState, action: UserAction) => {
         draft.changeNicknameDone = false;
         break;
       case CHANGE_NICKNAME_SUCCESS:
+        if (draft.me) {
+          draft.me.nickname = action.data.nickname;
+        }
         draft.changeNicknameLoading = false;
         draft.changeNicknameDone = true;
         break;

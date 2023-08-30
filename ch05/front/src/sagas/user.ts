@@ -41,6 +41,12 @@ import {
   REMOVE_FOLLOWER_SUCCESS,
   RemoveFollowerRequestAction,
   REMOVE_FOLLOWER_FAILURE,
+  CHANGE_NICKNAME_REQUEST,
+  CHANGE_NICKNAME_SUCCESS,
+  CHANGE_NICKNAME_FAILURE,
+  ChangeNickNameRequestAction,
+  LoadFollowersSuccessAction,
+  LoadFollowingsSuccessAction,
 } from '../reducers/user';
 
 // 유저 정보 불러오기
@@ -201,7 +207,7 @@ function loadFollowersAPI(data) {
   return axios.get('/user/followers', data);
 }
 
-function* loadFollowers(action) {
+function* loadFollowers(action: LoadFollowersSuccessAction) {
   try {
     const result: AxiosResponse = yield call(loadFollowersAPI, action.data);
     yield put({
@@ -226,7 +232,7 @@ function loadFollowingsAPI(data) {
   return axios.get('/user/followers', data);
 }
 
-function* loadFollowings(action) {
+function* loadFollowings(action: LoadFollowingsSuccessAction) {
   try {
     const result: AxiosResponse = yield call(loadFollowingsAPI, action.data);
     yield put({
@@ -270,6 +276,31 @@ function* watchRemoveFollower() {
   yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
 }
 
+// 닉네임 변경
+
+function changeNicknameAPI(data: string) {
+  return axios.patch('/user/nickname', { nickname: data });
+}
+
+function* changeNickname(action: ChangeNickNameRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(changeNicknameAPI, action.data);
+    yield put({
+      type: CHANGE_NICKNAME_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: CHANGE_NICKNAME_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchChangeNickname() {
+  yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLoadUser),
@@ -281,5 +312,6 @@ export default function* userSaga() {
     fork(watchLoadFollowers),
     fork(watchLoadFollowings),
     fork(watchRemoveFollower),
+    fork(watchChangeNickname),
   ]);
 }
