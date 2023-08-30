@@ -31,6 +31,16 @@ export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
 export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
 export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 
+// 이미지 업로드
+
+export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
+export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
+export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
+
+// 이미지 삭제
+
+export const REMOVE_IMAGE = 'REMOVE_IMAGE';
+
 // 게시글 로드 action type
 
 export interface LoadPostRequestAction {
@@ -132,6 +142,30 @@ export interface UnLikePostFailureAction {
   error: string;
 }
 
+// 이미지 업로드
+
+export interface UploadImagesRequestAction {
+  type: typeof UPLOAD_IMAGES_REQUEST;
+  data: FormData;
+}
+
+export interface UploadImagesSuccessAction {
+  type: typeof UPLOAD_IMAGES_SUCCESS;
+  data: string[];
+}
+
+export interface UploadImagesFailureAction {
+  type: typeof UPLOAD_IMAGES_FAILURE;
+  error: string;
+}
+
+// 이미지 삭제
+
+export interface RemoveImageAction {
+  type: typeof REMOVE_IMAGE;
+  data: number;
+}
+
 export type PostAcionTypes =
   // 게시글 로드
   | LoadPostRequestAction
@@ -156,7 +190,13 @@ export type PostAcionTypes =
   // 싫어요
   | UnLikePostRequestAction
   | UnLikePostSuccessAction
-  | UnLikePostFailureAction;
+  | UnLikePostFailureAction
+  // 이미지 업로드
+  | UploadImagesRequestAction
+  | UploadImagesSuccessAction
+  | UploadImagesFailureAction
+  // 이미지 삭제
+  | RemoveImageAction;
 
 export interface IMainPost {
   id: number;
@@ -213,6 +253,10 @@ export interface PostState {
   unlikePostLoading: boolean;
   unlikePostDone: boolean;
   unlikePostError: string | null;
+  // 이미지 업로드
+  uploadImagesLoading: boolean;
+  uploadImagesDone: boolean;
+  uploadImagesError: string | null;
 
   hasMorePosts: boolean;
 }
@@ -251,6 +295,11 @@ export const initialState: PostState = {
   unlikePostDone: false,
   unlikePostError: null,
 
+  // 이미지 업로드
+  uploadImagesLoading: false,
+  uploadImagesDone: false,
+  uploadImagesError: null,
+
   // 게시글 추가로딩
   hasMorePosts: true,
 };
@@ -266,7 +315,7 @@ export interface AddCommentSuccessData {
 }
 
 // 게시글 작성
-export const addPostRequestAction = (data: string) => ({
+export const addPostRequestAction = (data: FormData) => ({
   type: ADD_POST_REQUEST,
   data,
 });
@@ -278,6 +327,13 @@ export const addCommentRequestAction = (data: {
   userId: number;
 }): PostAcionTypes => ({
   type: ADD_COMMENT_REQUEST,
+  data,
+});
+
+// 이미지 삭제
+
+export const removeImageAction = (data: number) => ({
+  type: REMOVE_IMAGE,
   data,
 });
 
@@ -299,9 +355,37 @@ export const unlikePostRequestAction = (data: number) => ({
   data,
 });
 
+// 이미지 업로드
+
+export const uploadImagesRequestAction = () => ({
+  type: UPLOAD_IMAGES_REQUEST,
+});
+
 const reducer = (state = initialState, action: PostAcionTypes) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      // 이미지 삭제
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
+        break;
+
+      // 이미지 업로드
+      case UPLOAD_IMAGES_REQUEST:
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        break;
+      case UPLOAD_IMAGES_SUCCESS: {
+        draft.imagePaths = action.data;
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesDone = true;
+        break;
+      }
+      case UPLOAD_IMAGES_FAILURE:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
+        break;
+
       // 게시글 로드
       case LOAD_POST_REQUEST:
         draft.loadPostsLoading = true;
@@ -328,6 +412,7 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.mainPosts.unshift(action.data);
+        draft.imagePaths = [];
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;

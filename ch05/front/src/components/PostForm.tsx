@@ -3,7 +3,11 @@ import { Button, Form, Input } from 'antd';
 import { styled } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../reducers';
-import { addPostRequestAction } from '../reducers/post';
+import {
+  removeImageAction,
+  addPostRequestAction,
+  UPLOAD_IMAGES_REQUEST,
+} from '../reducers/post';
 import useInput from '../hooks/useInput';
 
 const FormWrapper = styled(Form)`
@@ -37,8 +41,40 @@ const PostForm = () => {
   }, [addPostDone]);
 
   const onSubmit = useCallback(() => {
-    dispatch(addPostRequestAction(text));
-  }, [text]);
+    if (!text || !text.trim()) {
+      return alert('게시글을 작성하세요');
+    }
+
+    const formData = new FormData();
+    imagePaths.forEach((p) => {
+      formData.append('image', p);
+    });
+
+    formData.append('content', text);
+
+    return dispatch(addPostRequestAction(formData));
+  }, [text, imagePaths]);
+
+  const onChangeImages = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const imageFormData = new FormData();
+      [].forEach.call(e.target.files, (f) => {
+        imageFormData.append('image', f);
+      });
+      dispatch({
+        type: UPLOAD_IMAGES_REQUEST,
+        data: imageFormData,
+      });
+    },
+    []
+  );
+
+  const onRemoveImage = useCallback(
+    (index: number) => () => {
+      dispatch(removeImageAction(index));
+    },
+    []
+  );
 
   return (
     <FormWrapper encType='multipart/form-data' onFinish={onSubmit}>
@@ -50,10 +86,12 @@ const PostForm = () => {
       />
       <div>
         <input
+          name='image'
           type='file'
           style={{ display: 'none' }}
           multiple
           ref={imageInput}
+          onChange={onChangeImages}
         />
         <Button onClick={onClickImageUpLoad}>이미지 업로드</Button>
         <Button
@@ -66,11 +104,15 @@ const PostForm = () => {
         </Button>
       </div>
       <div>
-        {imagePaths.map((v: string) => (
+        {imagePaths.map((v, i) => (
           <div key={v} style={{ display: 'inline-block' }}>
-            <img src={v} style={{ width: '200px' }} alt={v} />
+            <img
+              src={`http://localhost:3065/${v}`}
+              style={{ width: '200px' }}
+              alt={v}
+            />
             <div>
-              <Button>제거</Button>
+              <Button onClick={onRemoveImage(i)}>제거</Button>
             </div>
           </div>
         ))}
