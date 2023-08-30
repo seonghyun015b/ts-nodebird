@@ -31,6 +31,16 @@ import {
   FollowRequestAction,
   SignupRequestAction,
   UnfollowRequestAction,
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWERS_SUCCESS,
+  LOAD_FOLLOWERS_FAILURE,
+  LOAD_FOLLOWINGS_REQUEST,
+  LOAD_FOLLOWINGS_SUCCESS,
+  LOAD_FOLLOWINGS_FAILURE,
+  REMOVE_FOLLOWER_REQUEST,
+  REMOVE_FOLLOWER_SUCCESS,
+  RemoveFollowerRequestAction,
+  REMOVE_FOLLOWER_FAILURE,
 } from '../reducers/user';
 
 // 유저 정보 불러오기
@@ -185,6 +195,81 @@ function* watchUnFollow() {
   yield takeLatest(UNFOLLOW_REQUEST, unfollow);
 }
 
+// 팔로워 목록 로딩
+
+function loadFollowersAPI(data) {
+  return axios.get('/user/followers', data);
+}
+
+function* loadFollowers(action) {
+  try {
+    const result: AxiosResponse = yield call(loadFollowersAPI, action.data);
+    yield put({
+      type: LOAD_FOLLOWERS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: LOAD_FOLLOWERS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLoadFollowers() {
+  yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+
+// 팔로잉 목록 로딩
+
+function loadFollowingsAPI(data) {
+  return axios.get('/user/followers', data);
+}
+
+function* loadFollowings(action) {
+  try {
+    const result: AxiosResponse = yield call(loadFollowingsAPI, action.data);
+    yield put({
+      type: LOAD_FOLLOWINGS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: LOAD_FOLLOWINGS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLoadFollowings() {
+  yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
+}
+
+// 팔로워 차단
+
+function removeFollowerAPI(data: number) {
+  return axios.delete(`/user/follower/${data}`);
+}
+
+function* removeFollower(action: RemoveFollowerRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(removeFollowerAPI, action.data);
+    yield put({
+      type: REMOVE_FOLLOWER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: REMOVE_FOLLOWER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchRemoveFollower() {
+  yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLoadUser),
@@ -193,5 +278,8 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchFollow),
     fork(watchUnFollow),
+    fork(watchLoadFollowers),
+    fork(watchLoadFollowings),
+    fork(watchRemoveFollower),
   ]);
 }
