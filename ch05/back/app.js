@@ -2,10 +2,13 @@ const express = require('express');
 const cors = require('cors');
 
 const db = require('./models/index.js');
+
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+
 const passport = require('passport');
 const passportConfig = require('./passport');
+
 const dotenv = require('dotenv');
 dotenv.config();
 
