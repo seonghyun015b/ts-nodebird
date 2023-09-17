@@ -463,8 +463,9 @@ export const retweetRequestAction = (data: number) => ({
 
 // 이미지 업로드
 
-export const uploadImagesRequestAction = () => ({
+export const uploadImagesRequestAction = (data: FormData) => ({
   type: UPLOAD_IMAGES_REQUEST,
+  data,
 });
 
 const reducer = (state = initialState, action: PostAcionTypes) => {
@@ -482,9 +483,9 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         draft.uploadImagesError = null;
         break;
       case UPLOAD_IMAGES_SUCCESS: {
-        draft.imagePaths = action.data;
         draft.uploadImagesLoading = false;
         draft.uploadImagesDone = true;
+        draft.imagePaths = action.data;
         break;
       }
       case UPLOAD_IMAGES_FAILURE:

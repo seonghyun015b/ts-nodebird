@@ -37,7 +37,7 @@ const ImageZoom = ({ images, onClose }: ImageZoomProp) => {
             slidesToScroll={1}
           >
             {images.map((i) => (
-              <ImgWrapper key={i.src}>
+              <ImgWrapper key={`http://localhost:3065/${i.src}`}>
                 <img src={`http://localhost:3065/${i.src}`} alt={i.src} />
               </ImgWrapper>
             ))}

@@ -24,6 +24,7 @@ import {
   MessageOutlined,
   RetweetOutlined,
 } from '@ant-design/icons';
+
 import FollowButton from './FollowButton';
 import CommentCard from './CommentCard';
 
