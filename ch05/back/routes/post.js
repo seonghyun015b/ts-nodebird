@@ -193,6 +193,20 @@ router.delete('/:postId', isLoggedIn, async (req, res, next) => {
   }
 });
 
+// 댓글 삭제
+
+router.delete('/:commentId/comment', isLoggedIn, async (req, res, next) => {
+  try {
+    await Comment.destroy({
+      where: { id: req.params.commentId, UserId: req.user.id },
+    });
+    res.status(200).json({ CommentId: parseInt(req.params.commentId, 10) });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 // 리트윗
 // POST /post/1/retweet
 

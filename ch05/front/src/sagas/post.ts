@@ -27,6 +27,10 @@ import {
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
   RemovePostRequestAction,
+  REMOVE_COMMENT_REQUEST,
+  REMOVE_COMMENT_FAILURE,
+  REMOVE_COMMENT_SUCCESS,
+  RemoveCommentRequestAction,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -145,6 +149,32 @@ function* watchCommentPost() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
+// 댓글삭제
+
+function removeCommentAPI(data: { commentId: number }) {
+  return axios.delete(`/post/${data.commentId}/comment`);
+}
+
+function* removeComment(action: RemoveCommentRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(removeCommentAPI, action.data);
+
+    yield put({
+      type: REMOVE_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: REMOVE_COMMENT_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+function* watchRemoveComment() {
+  yield takeLatest(REMOVE_COMMENT_REQUEST, removeComment);
+}
+
 // 좋아요
 
 function likePostAPI(data: number) {
@@ -225,6 +255,7 @@ export default function* postSaga() {
     fork(watchAddPost),
     fork(watchRemovePost),
     fork(watchCommentPost),
+    fork(watchRemoveComment),
     fork(watchLoadPost),
     fork(watchLikePost),
     fork(watchUnLikePost),

@@ -2,11 +2,11 @@ import React, { useState, useCallback } from 'react';
 
 import {
   IMainPost,
-  REMOVE_POST_REQUEST,
   LIKE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
   removePostRequestAction,
 } from '../reducers/post';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../reducers';
 import { styled } from 'styled-components';
@@ -24,6 +24,7 @@ import {
   RetweetOutlined,
 } from '@ant-design/icons';
 import FollowButton from './FollowButton';
+import CommentCard from './CommentCard';
 
 interface PostCardProp {
   post: IMainPost;
@@ -120,15 +121,7 @@ const PostCard = ({ post }: PostCardProp) => {
             header={`${post.Comments.length}개의 댓글`}
             itemLayout='horizontal'
             dataSource={post.Comments}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  title={item.User.nickname}
-                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
-                  description={item.content}
-                />
-              </List.Item>
-            )}
+            renderItem={(item) => <CommentCard item={item} />}
           />
         </div>
       )}

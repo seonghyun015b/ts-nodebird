@@ -20,6 +20,11 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
+// 댓글 삭제
+export const REMOVE_COMMENT_REQUEST = 'REMOVE_COMMENT_REQUEST';
+export const REMOVE_COMMENT_SUCCESS = 'REMOVE_COMMENT_SUCCESS';
+export const REMOVE_COMMENT_FAILURE = 'REMOVE_COMMENT_FAILURE';
+
 // 좋아요
 export const LIKE_POST_REQUEST = 'LIKE_POST_REQUEST';
 export const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS';
@@ -109,6 +114,23 @@ export interface AddCommentFailureAction {
   error: string;
 }
 
+// 댓글 삭제 action type
+
+export interface RemoveCommentRequestAction {
+  type: typeof REMOVE_COMMENT_REQUEST;
+  data: { commentId: number };
+}
+
+export interface RemoveCommentSuccessAction {
+  type: typeof REMOVE_COMMENT_SUCCESS;
+  data: { commentId: number };
+}
+
+export interface RemoveCommentFailureAction {
+  type: typeof REMOVE_COMMENT_FAILURE;
+  error: string;
+}
+
 // 좋아요
 
 export interface LikePostRequestAction {
@@ -184,6 +206,10 @@ export type PostAcionTypes =
   | AddCommentRequestAction
   | AddCommentSuccessAction
   | AddCommentFailureAction
+  // 댓글 삭제
+  | RemoveCommentRequestAction
+  | RemoveCommentSuccessAction
+  | RemoveCommentFailureAction
   // 좋아요
   | LikePostRequestAction
   | LikePostSuccessAction
@@ -198,6 +224,16 @@ export type PostAcionTypes =
   | UploadImagesFailureAction
   // 이미지 삭제
   | RemoveImageAction;
+
+export interface Comment {
+  id: number;
+  content: string;
+  UserId: number;
+  PostId: number;
+  createdAt: string;
+  updatedAt: string;
+  User: { id: number; nickname: string };
+}
 
 export interface IMainPost {
   id: number;
@@ -214,15 +250,7 @@ export interface IMainPost {
       updatedAt: string;
     };
   }[];
-  Comments: {
-    id: number;
-    content: string;
-    UserId: number;
-    PostId: number;
-    createdAt: string;
-    updatedAt: string;
-    User: { id: number; nickname: string };
-  }[];
+  Comments: Comment[];
   createdAt: string;
   updatedAt: string;
 }
@@ -246,6 +274,10 @@ export interface PostState {
   addCommentLoading: boolean;
   addCommentDone: boolean;
   addCommentError: string | null;
+  // 댓글 삭제
+  removeCommentLoading: boolean;
+  removeCommentDone: boolean;
+  removeCommentError: string | null;
   //좋아요
   likePostLoading: boolean;
   likePostDone: boolean;
@@ -280,6 +312,11 @@ export const initialState: PostState = {
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
+
+  // 댓글 삭제
+  removeCommentLoading: false,
+  removeCommentDone: false,
+  removeCommentError: null,
 
   // 댓글 로딩
   addCommentLoading: false,
@@ -335,6 +372,13 @@ export const addCommentRequestAction = (data: {
   userId: number;
 }): PostAcionTypes => ({
   type: ADD_COMMENT_REQUEST,
+  data,
+});
+
+// 댓글 삭제
+
+export const removeCommentAction = (data: { commentId: number }) => ({
+  type: REMOVE_COMMENT_REQUEST,
   data,
 });
 
@@ -461,6 +505,30 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
       case ADD_COMMENT_FAILURE:
         draft.addCommentLoading = false;
         draft.addCommentError = action.error;
+        break;
+
+      // 댓글 삭제
+      case REMOVE_COMMENT_REQUEST:
+        draft.removeCommentLoading = true;
+        draft.removeCommentDone = false;
+        draft.removeCommentError = null;
+        break;
+
+      case REMOVE_COMMENT_SUCCESS:
+        draft.removeCommentLoading = false;
+        draft.removeCommentDone = true;
+        if (draft.mainPosts) {
+          draft.mainPosts = draft.mainPosts.map((post) => ({
+            ...post,
+            Comments: post.Comments.filter(
+              (v) => v.id !== action.data.commentId
+            ),
+          }));
+        }
+        break;
+      case REMOVE_COMMENT_FAILURE:
+        draft.removeCommentLoading = false;
+        draft.removeCommentError = action.error;
         break;
 
       // 좋아요
