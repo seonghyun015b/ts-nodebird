@@ -59,7 +59,7 @@ function* watchLoadPost() {
 
 // 게시글 추가
 
-function addPostAPI(data) {
+function addPostAPI(data: FormData) {
   return axios.post('/post', data);
 }
 

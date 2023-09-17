@@ -1,15 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 
-const userRouter = require('./routes/user');
 const db = require('./models/index.js');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const dotenv = require('dotenv');
-
 dotenv.config();
+
+const userRouter = require('./routes/user');
+const postRouter = require('./routes/post');
 
 const app = express();
 db.sequelize
@@ -24,7 +25,7 @@ passportConfig();
 app.use(
   cors({
     origin: true,
-    // credentials: false,
+    credentials: true,
   })
 );
 
@@ -43,6 +44,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/user', userRouter);
+app.use('/post', postRouter);
 
 app.listen(3065, () => {
   console.log('3065에서 서버 실행중');

@@ -52,7 +52,7 @@ import {
 // 유저 정보 불러오기
 
 function loadUserAPI() {
-  return axios.get('/user/');
+  return axios.get('/user');
 }
 
 function* loadUser() {
