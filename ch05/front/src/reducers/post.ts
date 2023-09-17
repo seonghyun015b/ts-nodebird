@@ -42,6 +42,11 @@ export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
 
+// 리트윗
+export const RETWEET_REQUEST = 'RETWEET_REQUEST';
+export const RETWEET_SUCCESS = 'RETWEET_SUCCESS';
+export const RETWEET_FAILURE = 'RETWEET_FAILURE';
+
 // 이미지 삭제
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
@@ -182,6 +187,23 @@ export interface UploadImagesFailureAction {
   error: string;
 }
 
+// 리트윗
+
+export interface RetweetRequestAction {
+  type: typeof RETWEET_REQUEST;
+  data: string;
+}
+
+export interface RetweetSuccessAction {
+  type: typeof RETWEET_SUCCESS;
+  data: IMainPost;
+}
+
+export interface RetweetFailureAction {
+  type: typeof RETWEET_FAILURE;
+  error: string;
+}
+
 // 이미지 삭제
 
 export interface RemoveImageAction {
@@ -222,6 +244,10 @@ export type PostAcionTypes =
   | UploadImagesRequestAction
   | UploadImagesSuccessAction
   | UploadImagesFailureAction
+  // 리트윗
+  | RetweetRequestAction
+  | RetweetSuccessAction
+  | RetweetFailureAction
   // 이미지 삭제
   | RemoveImageAction;
 
@@ -250,6 +276,17 @@ export interface IMainPost {
       updatedAt: string;
     };
   }[];
+  Retweet: {
+    id: number;
+    UserId: number;
+    content: string;
+    RetweetId: number | null;
+    User: { id: number; nickname: string };
+    Images: { id: number; src: string }[];
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+  RetweetId: number | null;
   Comments: Comment[];
   createdAt: string;
   updatedAt: string;
@@ -290,7 +327,12 @@ export interface PostState {
   uploadImagesLoading: boolean;
   uploadImagesDone: boolean;
   uploadImagesError: string | null;
+  // 리트윗
+  retweetLoading: boolean;
+  retweetDone: boolean;
+  retweetError: string | null;
 
+  // 글 추가 로딩
   hasMorePosts: boolean;
 }
 
@@ -337,6 +379,11 @@ export const initialState: PostState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+
+  // 리트윗
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
 
   // 게시글 추가로딩
   hasMorePosts: true,
@@ -404,6 +451,13 @@ export const likePostRequestAction = (data: number) => ({
 // 싫어요
 export const unlikePostRequestAction = (data: number) => ({
   type: UNLIKE_POST_REQUEST,
+  data,
+});
+
+// 리트윗
+
+export const retweetRequestAction = (data: number) => ({
+  type: RETWEET_REQUEST,
   data,
 });
 
@@ -570,6 +624,22 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
       case UNLIKE_POST_FAILURE:
         draft.unlikePostLoading = false;
         draft.unlikePostError = action.error;
+        break;
+
+      // 리트윗
+      case RETWEET_REQUEST:
+        draft.retweetLoading = true;
+        draft.retweetDone = false;
+        draft.retweetError = null;
+        break;
+      case RETWEET_SUCCESS:
+        draft.retweetLoading = false;
+        draft.retweetDone = true;
+        draft.mainPosts.unshift(action.data);
+        break;
+      case RETWEET_FAILURE:
+        draft.retweetLoading = false;
+        draft.retweetError = action.error;
         break;
 
       default:
