@@ -3,11 +3,12 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 
 const { User, Post } = require('../models');
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const router = express.Router();
 
 // 로그인
 
-router.post('/login', (req, res, next) => {
+router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       console.error(err);
@@ -50,7 +51,7 @@ router.post('/login', (req, res, next) => {
 
 // 로그아웃
 
-router.post('/logout', (req, res) => {
+router.post('/logout', isLoggedIn, (req, res) => {
   req.logout(() => {
     res.send('ok');
   });
@@ -58,7 +59,7 @@ router.post('/logout', (req, res) => {
 
 // 회원가입
 
-router.post('/', async (req, res, next) => {
+router.post('/', isLoggedIn, async (req, res, next) => {
   try {
     const exUser = await User.findOne({
       where: {
@@ -80,4 +81,5 @@ router.post('/', async (req, res, next) => {
     next(error);
   }
 });
+
 module.exports = router;
