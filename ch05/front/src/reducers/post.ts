@@ -79,6 +79,7 @@ export interface AddPostFailureAction {
 
 export interface RemovePostRequestAction {
   type: typeof REMOVE_POST_REQUEST;
+  data: { PostId: number };
 }
 
 export interface RemovePostSuccessAction {
@@ -317,6 +318,13 @@ export interface AddCommentSuccessData {
 // 게시글 작성
 export const addPostRequestAction = (data: FormData) => ({
   type: ADD_POST_REQUEST,
+  data,
+});
+
+// 게시글 삭제
+
+export const removePostRequestAction = (data: number) => ({
+  type: REMOVE_POST_REQUEST,
   data,
 });
 

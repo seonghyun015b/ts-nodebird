@@ -26,6 +26,7 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
+  RemovePostRequestAction,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -92,7 +93,7 @@ function removePostAPI(data: number) {
   return axios.delete(`/post/${data}`);
 }
 
-function* removePost(action) {
+function* removePost(action: RemovePostRequestAction) {
   try {
     const result: AxiosResponse = yield call(removePostAPI, action.data);
     yield put({
@@ -101,7 +102,7 @@ function* removePost(action) {
     });
     yield put({
       type: REMOVE_POST_OF_ME,
-      data: action.data,
+      data: result.data,
     });
   } catch (err: any) {
     yield put({

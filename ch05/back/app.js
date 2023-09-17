@@ -14,6 +14,7 @@ dotenv.config();
 
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
+const postsRouter = require('./routes/posts');
 
 const app = express();
 db.sequelize
@@ -48,6 +49,7 @@ app.use(passport.session());
 
 app.use('/user', userRouter);
 app.use('/post', postRouter);
+app.use('/posts', postsRouter);
 
 app.listen(3065, () => {
   console.log('3065에서 서버 실행중');

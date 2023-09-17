@@ -5,6 +5,7 @@ import {
   REMOVE_POST_REQUEST,
   LIKE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
+  removePostRequestAction,
 } from '../reducers/post';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../reducers';
@@ -61,10 +62,7 @@ const PostCard = ({ post }: PostCardProp) => {
   }, []);
 
   const onRemovePost = useCallback(() => {
-    dispatch({
-      type: REMOVE_POST_REQUEST,
-      data: post.id,
-    });
+    dispatch(removePostRequestAction(post.id));
   }, []);
 
   return (
