@@ -82,7 +82,7 @@ function logInAPI(data: LoginData) {
 
 function* logIn(action: LoginRequestAction) {
   try {
-    const result: AxiosResponse<UserData> = yield call(logInAPI, action.data);
+    const result: AxiosResponse = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
