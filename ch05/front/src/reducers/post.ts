@@ -612,12 +612,9 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         break;
       case UNLIKE_POST_SUCCESS: {
         const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
-        if (post) {
-          const index = post?.Likers.findIndex(
-            (v) => v.id === action.data.UserId
-          );
-          if (index !== -1) post?.Likers.splice(index, 1);
-        }
+
+        post.Likers = post?.Likers.filter((v) => v.id !== action.data.UserId);
+
         draft.unlikePostLoading = false;
         draft.unlikePostDone = true;
         break;
