@@ -40,8 +40,6 @@ export interface LoadMyInfoData {
 }
 
 export interface UserInitialState {
-  // 로그인 상태
-  // isLoggedIn: boolean;
   // 로그인
   logInLoading: boolean;
   logInDone: boolean;

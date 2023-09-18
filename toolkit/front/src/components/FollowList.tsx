@@ -1,9 +1,16 @@
 import { StopOutlined } from '@ant-design/icons';
 import { Button, Card, List } from 'antd';
+import { FollowType } from '../toolkit/user';
+
+interface Data {
+  id: number;
+  nickname?: string;
+  Follow?: FollowType[];
+}
 
 interface FollowListProp {
   header: string;
-  data: { nickname: string }[];
+  data: Data[];
 }
 
 const FollowList = ({ header, data }: FollowListProp) => {

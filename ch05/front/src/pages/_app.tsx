@@ -1,19 +1,16 @@
-import React, { ElementType } from 'react';
+import React from 'react';
+import { AppProps } from 'next/app';
 import Head from 'next/head';
 import wrapper from '../store/configureStore';
 
-interface NodeBirdProp {
-  Component: ElementType;
-}
-
-const NodeBird = ({ Component }: NodeBirdProp) => {
+const NodeBird = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
         <meta charSet='utf-8' />
         <title>NodeBird</title>
       </Head>
-      <Component />
+      <Component {...pageProps} />
     </>
   );
 };
