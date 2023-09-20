@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk, nanoid } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { MainPost } from './post';
 
-// import { HYDRATE } from 'next-redux-wrapper';
+import { HYDRATE } from 'next-redux-wrapper';
 
 export interface LoginData {
   email: string;
@@ -48,6 +48,10 @@ export interface UserInitialState {
   logOutLoading: boolean;
   logOutDone: boolean;
   logOutError: string | undefined | null;
+  // 내 정보 불러오기
+  loadMyInfoLoading: boolean;
+  loadMyInfoDone: boolean;
+  loadMyInfoError: null | string | undefined;
   // 유저정보 불러오기
   loadUserLoading: boolean;
   loadUserDone: boolean;
@@ -71,15 +75,15 @@ export interface UserInitialState {
 
   // 유저 상태
   me: null | UserData | LoadMyInfoData;
-  signUpData: {};
-  loginData: {};
+  // 유저 정보 불러오기
+  userInfo: null | LoadMyInfoData;
 }
 
 export const initialState: UserInitialState = {
   // 유저 상태
   me: null,
-  signUpData: {},
-  loginData: {},
+  // 유저 정보 불러오기
+  userInfo: null,
   // 로그인
   logInLoading: false,
   logInDone: false,
@@ -88,6 +92,10 @@ export const initialState: UserInitialState = {
   logOutLoading: false,
   logOutDone: false,
   logOutError: null,
+  // 내 정보 불러오기
+  loadMyInfoLoading: false,
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
   // 유저정보 불러오기
   loadUserLoading: false,
   loadUserDone: false,
@@ -113,7 +121,7 @@ export const initialState: UserInitialState = {
 // 로그인
 export const loginAction = createAsyncThunk(
   '/user/login',
-  async (data: { email: string; password: string }) => {
+  async (data: LoginData) => {
     const response = await axios.post('user/login', data);
     return response.data;
   }
@@ -125,11 +133,24 @@ export const logoutAction = createAsyncThunk('user/logout', async () => {
   return response;
 });
 
+// 내 정보 불러오기
+
+export const loadMyInfoAction = createAsyncThunk(
+  'user/loadMyInfo',
+  async () => {
+    const response = await axios.get('/user');
+    return response.data;
+  }
+);
+
 // 유저정보 불러오기
-export const loadUserAction = createAsyncThunk('user/loadUser', async () => {
-  const response = await axios.get('/user');
-  return response.data;
-});
+export const loadUserAction = createAsyncThunk(
+  'user/loadUser',
+  async (data) => {
+    const response = await axios.get(`/user/${data}`);
+    return response.data;
+  }
+);
 
 // 팔로우
 export const followAction = createAsyncThunk(
@@ -173,6 +194,10 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (build) => {
     build
+      .addCase(HYDRATE, (state, action) => ({
+        ...state,
+        ...action.payload.user,
+      }))
       // 로그인
       .addCase(loginAction.pending, (draft) => {
         draft.logInLoading = true;
@@ -213,13 +238,26 @@ const userSlice = createSlice({
       .addCase(loadUserAction.fulfilled, (draft, action) => {
         draft.loadUserLoading = false;
         draft.loadUserDone = true;
-        // if (draft.me) {
         draft.me = action.payload || null;
-        // }
       })
       .addCase(loadUserAction.rejected, (draft, action) => {
         draft.loadUserLoading = false;
         draft.loadUserError = action.error.message;
+      })
+      // 내 정보 불러오기
+      .addCase(loadMyInfoAction.pending, (draft) => {
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoDone = false;
+        draft.loadMyInfoError = null;
+      })
+      .addCase(loadMyInfoAction.fulfilled, (draft, action) => {
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoDone = true;
+        draft.userInfo = action.payload || null;
+      })
+      .addCase(loadMyInfoAction.rejected, (draft, action) => {
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoError = action.error.message;
       })
       // 팔로우
       .addCase(followAction.pending, (draft) => {
@@ -290,8 +328,6 @@ const userSlice = createSlice({
         draft.signUpLoading = false;
         draft.signUpError = action.error.message;
       })
-
-      //
       .addDefaultCase((state) => state);
   },
 });

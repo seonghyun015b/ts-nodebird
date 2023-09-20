@@ -14,7 +14,7 @@ import PostCardContent from './PostCardContent';
 import CommentForm from './CommentForm';
 import FollowButton from './FollowButton';
 
-import { AppDispatch, RootState } from '../toolkit/index';
+import { AppDispatch, RootState } from '../store/configureStore';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   MainPost,

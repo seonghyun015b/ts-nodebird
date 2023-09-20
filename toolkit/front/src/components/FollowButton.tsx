@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MainPost } from '../toolkit/post';
-import { AppDispatch, RootState } from '../toolkit/index';
+import { AppDispatch, RootState } from '../store/configureStore';
 import { Button } from 'antd';
 import { followAction, unfollowAction } from '../toolkit/user';
 

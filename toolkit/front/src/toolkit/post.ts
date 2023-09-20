@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import { HYDERATE } from 'next-redux-wrapper';
+import { HYDERATE, HYDRATE } from 'next-redux-wrapper';
 
 import axios from 'axios';
 
@@ -143,9 +143,9 @@ export const initialState: PostState = {
 // 게시글 불러오기
 
 export const loadPostAction = createAsyncThunk(
-  '/load/loadPost',
-  async (lastId) => {
-    const response = await axios.get(`/posts?lastId=${lastId} || 0`);
+  '/load/loadPosts',
+  async (lastId: number | undefined) => {
+    const response = await axios.get(`/posts?lastId=${lastId}||0`);
     return response.data;
   }
 );
@@ -209,7 +209,6 @@ export const upLoadImageAction = createAsyncThunk(
   'upload/images',
   async (data: FormData) => {
     const response = await axios.post('/post/images', data);
-    console.log(typeof data, data);
     return response.data;
   }
 );
@@ -246,6 +245,10 @@ const postSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(HYDRATE, (state, action) => ({
+        ...state,
+        ...action.payload.post,
+      }))
       //게시글 로드
       .addCase(loadPostAction.pending, (draft) => {
         draft.loadPostLoading = true;
