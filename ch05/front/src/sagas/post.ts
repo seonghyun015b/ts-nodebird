@@ -35,7 +35,6 @@ import {
   RETWEET_FAILURE,
   RETWEET_SUCCESS,
   RetweetRequestAction,
-  IMainPost,
   UploadImagesRequestAction,
 } from '../reducers/post';
 
