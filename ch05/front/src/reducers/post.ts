@@ -89,7 +89,7 @@ export interface AddPostFailureAction {
 
 export interface RemovePostRequestAction {
   type: typeof REMOVE_POST_REQUEST;
-  data: { PostId: number };
+  data: number;
 }
 
 export interface RemovePostSuccessAction {
@@ -191,7 +191,7 @@ export interface UploadImagesFailureAction {
 
 export interface RetweetRequestAction {
   type: typeof RETWEET_REQUEST;
-  data: string;
+  data: number;
 }
 
 export interface RetweetSuccessAction {

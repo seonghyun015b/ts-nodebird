@@ -36,6 +36,7 @@ import {
   RETWEET_SUCCESS,
   RetweetRequestAction,
   IMainPost,
+  UploadImagesRequestAction,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -232,11 +233,11 @@ function* watchUnLikePost() {
 
 // 이미지 업로드
 
-function uploadImageAPI(data) {
+function uploadImageAPI(data: FormData) {
   return axios.post('/post/images', data);
 }
 
-function* uploadImage(action) {
+function* uploadImage(action: UploadImagesRequestAction) {
   try {
     const result: AxiosResponse = yield call(uploadImageAPI, action.data);
     yield put({
@@ -263,10 +264,7 @@ function retweetAPI(data: number) {
 
 function* retweet(action: RetweetRequestAction) {
   try {
-    const result: AxiosResponse<IMainPost> = yield call(
-      retweetAPI,
-      action.data
-    );
+    const result: AxiosResponse = yield call(retweetAPI, action.data);
     yield put({
       type: RETWEET_SUCCESS,
       data: result.data,
