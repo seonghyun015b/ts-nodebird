@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { MainPost, addCommentAction } from '../toolkit/post';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store/configureStore';
+import { AppDispatch, RootState } from '../toolkit/index';
 import useInput from '../hooks/useInput';
 import { Button, Form, Input } from 'antd';
 

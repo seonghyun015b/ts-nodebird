@@ -7,7 +7,7 @@ import { styled } from 'styled-components';
 import AppLayout from '../components/AppLayout';
 import useInput from '../hooks/useInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store/configureStore';
+import { AppDispatch, RootState } from '../toolkit/index';
 import Router from 'next/router';
 import { signupAction } from '../toolkit/user';
 

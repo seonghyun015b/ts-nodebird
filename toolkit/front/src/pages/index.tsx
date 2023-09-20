@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import AppLayout from '../components/AppLayout';
 import PostForm from '../components/PostForm';
-import { AppDispatch, RootState } from '../store/configureStore';
+import { AppDispatch, RootState } from '../toolkit/index';
 import { useDispatch, useSelector } from 'react-redux';
 import PostCard from '../components/PostCard';
 import { loadPostAction } from '../toolkit/post';

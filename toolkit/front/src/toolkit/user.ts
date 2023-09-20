@@ -113,7 +113,7 @@ export const initialState: UserInitialState = {
 // 로그인
 export const loginAction = createAsyncThunk(
   '/user/login',
-  async (data: UserData) => {
+  async (data: { email: string; password: string }) => {
     const response = await axios.post('user/login', data);
     return response.data;
   }
@@ -181,7 +181,6 @@ const userSlice = createSlice({
       })
       .addCase(loginAction.fulfilled, (draft, action) => {
         draft.logInLoading = false;
-        // draft.isLoggedIn = true;
         draft.logInError = null;
         draft.me = action.payload;
       })

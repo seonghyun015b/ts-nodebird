@@ -4,7 +4,7 @@ import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
 import { useSelector } from 'react-redux';
-import { RootState } from '../store/configureStore';
+import { RootState } from '../toolkit/index';
 import Router from 'next/router';
 
 const Profile = () => {

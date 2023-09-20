@@ -9,8 +9,5 @@ export const store = configureStore({
 
 const createStore = () => store;
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-
 const wrapper = createWrapper(createStore);
 export default wrapper;

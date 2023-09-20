@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Form, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store/configureStore';
+import { AppDispatch, RootState } from '../toolkit/index';
 import useInput from '../hooks/useInput';
 import { changeNicknameAction } from '../toolkit/user';
 

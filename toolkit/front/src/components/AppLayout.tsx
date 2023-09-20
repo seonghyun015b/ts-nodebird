@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Menu, Input, Row, Col } from 'antd';
 import Link from 'next/link';
 import UserProfile from './UserProfile';
 import LoginForm from './LoginForm';
-import { RootState } from '../store/configureStore';
+import { RootState } from '../toolkit/index';
 import { useSelector } from 'react-redux';
 
 interface AppLayoutProp {

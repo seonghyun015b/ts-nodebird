@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from 'react';
 import { Button, Form, Input } from 'antd';
-import { AppDispatch, RootState } from '../store/configureStore';
+import { AppDispatch, RootState } from '../toolkit/index';
 import { useDispatch, useSelector } from 'react-redux';
 import { styled } from 'styled-components';
 import {

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Avatar, Button, Card } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch, RootState } from '../store/configureStore';
+import { AppDispatch, RootState } from '../toolkit/index';
 import { logoutAction } from '../toolkit/user';
 
 const UserProfile = () => {

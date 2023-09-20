@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { List, Avatar, Button } from 'antd';
 import { Comment, removeCommentAction } from '../toolkit/post';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store/configureStore';
+import { AppDispatch, RootState } from '../toolkit/index';
 
 interface CommentCardProp {
   item: Comment;
