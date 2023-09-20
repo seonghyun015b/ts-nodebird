@@ -28,8 +28,11 @@ const Home = () => {
         window.scrollY + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
+        const lastId = mainPosts[mainPosts.length - 1]?.id;
+
         if (hasMorePosts && !loadPostLoading) {
           dispatch(loadPostAction());
+          lastId;
         }
       }
     }
@@ -39,7 +42,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [hasMorePosts, loadPostLoading]);
+  }, [hasMorePosts, loadPostLoading, mainPosts]);
 
   return (
     <>

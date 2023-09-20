@@ -142,10 +142,13 @@ export const initialState: PostState = {
 
 // 게시글 불러오기
 
-export const loadPostAction = createAsyncThunk('/load/loadPost', async () => {
-  const response = await axios.get('/posts');
-  return response.data;
-});
+export const loadPostAction = createAsyncThunk(
+  '/load/loadPost',
+  async (lastId) => {
+    const response = await axios.get(`/posts?lastId=${lastId} || 0`);
+    return response.data;
+  }
+);
 
 // 게시글 작성
 
