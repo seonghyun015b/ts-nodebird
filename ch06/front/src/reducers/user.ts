@@ -1,10 +1,14 @@
 import { produce } from 'immer';
 import { IMainPost } from './post';
 
-//유저 정보 불러오기
+//내 정보 불러오기
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST';
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS';
 export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE';
+//유저 정보 불러오기
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
 // 로그인
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS';
@@ -46,10 +50,14 @@ export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
 export interface UserState {
-  // 유저 정보 불러오는 중
+  // 내 정보 불러오는중
   loadMyInfoLoading: boolean;
-  loadMyInfoDone: boolean | null;
-  loadMyInfoError: boolean | string;
+  loadMyInfoDone: boolean;
+  loadMyInfoFailure: boolean | string | null;
+  // 유저 정보 불러오는중
+  loadUserLoading: boolean;
+  loadUserDone: boolean;
+  loadUserFailure: boolean | string | null;
   // 로그인 시도
   logInLoading: boolean;
   logInDone: boolean | null;
@@ -87,8 +95,8 @@ export interface UserState {
   loadFollowingsDone: boolean;
   loadFollowingsError: string | null;
   me: null | UserData | LoadMyInfoSuccessData;
-  signUpData: {};
-  loginData: {};
+  // 유저 정보
+  userInfo: null | UserData;
 }
 
 export interface LoginData {
@@ -125,7 +133,7 @@ export interface UserData {
   updatedAt: string;
 }
 
-// 유저 정보 불러오기
+// 내 정보 불러오기
 
 export interface LoadMyInfoRequestAction {
   type: typeof LOAD_MY_INFO_REQUEST;
@@ -138,6 +146,22 @@ export interface LoadMyInfoSuccessAction {
 
 export interface LoadMyInfoFailureAction {
   type: typeof LOAD_MY_INFO_FAILURE;
+  error: string;
+}
+
+// 유저정보 불러오기
+
+export interface LoadUserInfoRequestAction {
+  type: typeof LOAD_USER_REQUEST;
+}
+
+export interface LoadUserInfoSuccessAction {
+  type: typeof LOAD_USER_SUCCESS;
+  data: UserData;
+}
+
+export interface LoadUserInfoFailureAction {
+  type: typeof LOAD_USER_FAILURE;
   error: string;
 }
 
@@ -302,10 +326,14 @@ export interface RemovePostOfMeAction {
 }
 
 export type UserAction =
-  // 유저 정보 불러오기
+  // 내 정보 불러오기
   | LoadMyInfoRequestAction
   | LoadMyInfoSuccessAction
   | LoadMyInfoFailureAction
+  // 유저 정보 불러오기
+  | LoadUserInfoRequestAction
+  | LoadUserInfoSuccessAction
+  | LoadUserInfoFailureAction
   // 로그인
   | LoginRequestAction
   | LoginSuccessAction
@@ -359,10 +387,14 @@ export interface DummyData {
 // 초기값
 
 export const initialState: UserState = {
-  // 유저 정보 불러오는 중
+  // 내 정보 불러오는중
   loadMyInfoLoading: false,
-  loadMyInfoDone: null,
-  loadMyInfoError: false,
+  loadMyInfoDone: false,
+  loadMyInfoFailure: false,
+  // 유저 정보 불러오는중
+  loadUserLoading: false,
+  loadUserDone: false,
+  loadUserFailure: false,
   // 로그인 시도
   logInLoading: false,
   logInDone: false,
@@ -400,8 +432,8 @@ export const initialState: UserState = {
   loadFollowingsDone: false,
   loadFollowingsError: null,
   me: null,
-  signUpData: {},
-  loginData: {},
+  // 유저 정보
+  userInfo: null,
 };
 
 // 로그인
@@ -464,20 +496,36 @@ export const changeNicknameRequestAction = (data: string) => ({
 const reducer = (state = initialState, action: UserAction) => {
   return produce(state, (draft) => {
     switch (action.type) {
-      // 유저 정보 불러오기
+      // 내 정보 불러오기
       case LOAD_MY_INFO_REQUEST:
         draft.loadMyInfoLoading = true;
-        draft.loadMyInfoError = false;
+        draft.loadMyInfoFailure = false;
         draft.loadMyInfoDone = false;
         break;
       case LOAD_MY_INFO_SUCCESS:
         draft.loadMyInfoLoading = false;
-        draft.me = action.data;
         draft.loadMyInfoDone = true;
+        draft.me = action.data;
         break;
       case LOAD_MY_INFO_FAILURE:
         draft.loadMyInfoLoading = false;
-        draft.loadMyInfoError = action.error;
+        draft.loadMyInfoFailure = action.error;
+        break;
+
+      // 유저 정보 불러오기
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserFailure = false;
+        draft.loadUserDone = false;
+        break;
+      case LOAD_USER_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.loadUserDone = true;
+        draft.userInfo = action.data;
+        break;
+      case LOAD_USER_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserFailure = action.error;
         break;
 
       // 로그인

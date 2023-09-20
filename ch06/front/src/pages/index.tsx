@@ -7,6 +7,9 @@ import PostForm from '../components/PostForm';
 
 import { LOAD_POST_REQUEST, IMainPost } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import wrapper from '../store/configureStore';
+import axios from 'axios';
+import { END } from 'redux-saga';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -22,15 +25,6 @@ const Home = () => {
     hasMorePosts: boolean;
     loadPostsLoading: boolean;
   } = useSelector((state: RootState) => state.post);
-
-  useEffect(() => {
-    dispatch({
-      type: LOAD_MY_INFO_REQUEST,
-    });
-    dispatch({
-      type: LOAD_POST_REQUEST,
-    });
-  }, []);
 
   useEffect(() => {
     function onScroll() {
@@ -64,5 +58,29 @@ const Home = () => {
     </AppLayout>
   );
 };
+
+// SSR
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req ? req.headers.cookie : '';
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+
+      store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+      });
+
+      store.dispatch({
+        type: LOAD_POST_REQUEST,
+      });
+
+      store.dispatch(END);
+      await store.sagaTask.toPromise();
+    }
+);
 
 export default Home;

@@ -4,10 +4,10 @@ import { AnyAction, combineReducers } from 'redux';
 import user, { UserState } from './user';
 import post, { PostState } from './post';
 
-interface State {
+export type State = {
   user: UserState;
   post: PostState;
-}
+};
 
 const rootReducer = (state: State | undefined, action: AnyAction): State => {
   switch (action.type) {

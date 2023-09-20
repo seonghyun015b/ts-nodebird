@@ -47,17 +47,21 @@ import {
   ChangeNickNameRequestAction,
   LoadFollowersSuccessAction,
   LoadFollowingsSuccessAction,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
+  LOAD_USER_REQUEST,
+  LoadUserInfoSuccessAction,
 } from '../reducers/user';
 
 // 유저 정보 불러오기
 
-function loadUserAPI() {
+function loadMyInfoAPI() {
   return axios.get('/user');
 }
 
-function* loadUser() {
+function* loadMyInfo() {
   try {
-    const result: AxiosResponse = yield call(loadUserAPI);
+    const result: AxiosResponse = yield call(loadMyInfoAPI);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
@@ -70,8 +74,33 @@ function* loadUser() {
   }
 }
 
+function* watchloadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+
+// 다른사람 정보 불러오기
+
+function loadUserAPI(data: UserData) {
+  return axios.get(`/user/${data}`);
+}
+
+function* loadUser(action: LoadUserInfoSuccessAction) {
+  try {
+    const result: AxiosResponse = yield call(loadUserAPI, action.data);
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: LOAD_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLoadUser() {
-  yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
+  yield takeLatest(LOAD_USER_REQUEST, loadUser);
 }
 
 // 로그인
@@ -135,7 +164,7 @@ function signUpAPI(data: {
 
 function* signUp(action: SignupRequestAction) {
   try {
-    const result: AxiosResponse<string> = yield call(signUpAPI, action.data);
+    const result: AxiosResponse = yield call(signUpAPI, action.data);
     yield put({
       type: SIGN_UP_SUCCESS,
     });
@@ -303,6 +332,7 @@ function* watchChangeNickname() {
 
 export default function* userSaga() {
   yield all([
+    fork(watchloadMyInfo),
     fork(watchLoadUser),
     fork(watchLogIn),
     fork(watchLogOut),
