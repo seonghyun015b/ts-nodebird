@@ -3,9 +3,9 @@ import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
   ADD_POST_FAILURE,
-  LOAD_POST_REQUEST,
-  LOAD_POST_SUCCESS,
-  LOAD_POST_FAILURE,
+  LOAD_POSTS_REQUEST,
+  LOAD_POSTS_SUCCESS,
+  LOAD_POSTS_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
   REMOVE_POST_FAILURE,
@@ -52,19 +52,19 @@ function* loadPost(action: LoadPostRequestAction) {
     const result: AxiosResponse = yield call(loadPostAPI, action.data);
 
     yield put({
-      type: LOAD_POST_SUCCESS,
+      type: LOAD_POSTS_SUCCESS,
       data: result.data,
     });
   } catch (err: any) {
     yield put({
-      type: LOAD_POST_FAILURE,
+      type: LOAD_POSTS_FAILURE,
       data: err.response.data,
     });
   }
 }
 
 function* watchLoadPost() {
-  yield takeLatest(LOAD_POST_REQUEST, loadPost);
+  yield takeLatest(LOAD_POSTS_REQUEST, loadPost);
 }
 
 // 게시글 추가

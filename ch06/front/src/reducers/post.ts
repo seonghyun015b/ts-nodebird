@@ -1,9 +1,9 @@
 import { produce } from 'immer';
 
 // 게시글 로드
-export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
-export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
-export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
+export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
+export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
 
 // 게시글 추가
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
@@ -54,17 +54,17 @@ export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 // 게시글 로드 action type
 
 export interface LoadPostRequestAction {
-  type: typeof LOAD_POST_REQUEST;
+  type: typeof LOAD_POSTS_REQUEST;
   data: number;
 }
 
 export interface LoadPostSuccessAction {
-  type: typeof LOAD_POST_SUCCESS;
+  type: typeof LOAD_POSTS_SUCCESS;
   data: IMainPost;
 }
 
 export interface LoadPostFailureAction {
-  type: typeof LOAD_POST_FAILURE;
+  type: typeof LOAD_POSTS_FAILURE;
   error: string;
 }
 
@@ -438,7 +438,7 @@ export const removeImageAction = (data: number) => ({
 
 // 게시글 불러오기
 export const loadPostRequestAction = (data: number) => ({
-  type: LOAD_POST_REQUEST,
+  type: LOAD_POSTS_REQUEST,
   data,
 });
 
@@ -494,18 +494,18 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         break;
 
       // 게시글 로드
-      case LOAD_POST_REQUEST:
+      case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
         draft.loadPostsError = null;
         break;
-      case LOAD_POST_SUCCESS:
+      case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
         draft.mainPosts = draft.mainPosts.concat(action.data);
         draft.hasMorePosts = draft.mainPosts.length === 10;
         break;
-      case LOAD_POST_FAILURE:
+      case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
         break;

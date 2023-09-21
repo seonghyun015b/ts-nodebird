@@ -5,7 +5,7 @@ import { RootState } from '../reducers';
 import PostCard from '../components/PostCard';
 import PostForm from '../components/PostForm';
 
-import { LOAD_POST_REQUEST, IMainPost } from '../reducers/post';
+import { LOAD_POSTS_REQUEST, IMainPost } from '../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
 import axios from 'axios';
 import { END } from 'redux-saga';
@@ -37,7 +37,7 @@ const Home = () => {
 
         if (hasMorePosts && !loadPostsLoading) {
           dispatch({
-            type: LOAD_POST_REQUEST,
+            type: LOAD_POSTS_REQUEST,
             lastId,
           });
         }
@@ -75,7 +75,7 @@ export const getServerSideProps: GetServerSideProps =
     });
 
     store.dispatch({
-      type: LOAD_POST_REQUEST,
+      type: LOAD_POSTS_REQUEST,
     });
 
     store.dispatch(END);
