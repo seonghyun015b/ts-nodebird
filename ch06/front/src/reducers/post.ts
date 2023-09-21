@@ -5,6 +5,11 @@ export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
 
+// 특정 게시글 로드
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+
 // 게시글 추가
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -53,18 +58,35 @@ export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 // 게시글 로드 action type
 
-export interface LoadPostRequestAction {
+export interface LoadPostsRequestAction {
   type: typeof LOAD_POSTS_REQUEST;
   data: number;
 }
 
-export interface LoadPostSuccessAction {
+export interface LoadPostsSuccessAction {
   type: typeof LOAD_POSTS_SUCCESS;
   data: IMainPost;
 }
 
-export interface LoadPostFailureAction {
+export interface LoadPostsFailureAction {
   type: typeof LOAD_POSTS_FAILURE;
+  error: string;
+}
+
+// 특정 게시글 불러오기기
+
+export interface LoadPostRequestAction {
+  type: typeof LOAD_POST_REQUEST;
+  data: number;
+}
+
+export interface LoadPostSuccessAction {
+  type: typeof LOAD_POST_SUCCESS;
+  data: IMainPost;
+}
+
+export interface LoadPostFailureAction {
+  type: typeof LOAD_POST_FAILURE;
   error: string;
 }
 
@@ -213,6 +235,10 @@ export interface RemoveImageAction {
 
 export type PostAcionTypes =
   // 게시글 로드
+  | LoadPostsRequestAction
+  | LoadPostsSuccessAction
+  | LoadPostsFailureAction
+  // 게시글 한개 로드
   | LoadPostRequestAction
   | LoadPostSuccessAction
   | LoadPostFailureAction
@@ -303,6 +329,10 @@ export interface PostState {
   loadPostsLoading: boolean;
   loadPostsDone: boolean;
   loadPostsError: string | null;
+  // 게시글 하나 불러오기
+  loadPostLoading: boolean;
+  loadPostDone: boolean;
+  loadPostError: string | null;
   // 게시글 제거
   removePostLoading: boolean;
   removePostDone: boolean;
@@ -334,6 +364,9 @@ export interface PostState {
 
   // 글 추가 로딩
   hasMorePosts: boolean;
+
+  // 글 한개 로드
+  singlePost: null | IMainPost;
 }
 
 export const initialState: PostState = {
@@ -349,6 +382,11 @@ export const initialState: PostState = {
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+
+  // 게시글 하나 불러오기
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
 
   // 게시글 삭제
   removePostLoading: false,
@@ -387,6 +425,9 @@ export const initialState: PostState = {
 
   // 게시글 추가로딩
   hasMorePosts: true,
+
+  // 글 한개 로드
+  singlePost: null,
 };
 
 export interface AddCommentSuccessData {
@@ -508,6 +549,22 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
+        break;
+
+      // 게시글 하나 로드
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.singlePost = action.data;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
         break;
       // 게시글 추가
       case ADD_POST_REQUEST:

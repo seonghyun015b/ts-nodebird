@@ -19,7 +19,7 @@ import {
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_SUCCESS,
   LikePostRequestAction,
-  LoadPostRequestAction,
+  LoadPostsRequestAction,
   UnLikePostRequestAction,
   AddCommentRequestAction,
   AddPostRequestAction,
@@ -36,6 +36,10 @@ import {
   RETWEET_SUCCESS,
   RetweetRequestAction,
   UploadImagesRequestAction,
+  LOAD_POST_FAILURE,
+  LOAD_POST_SUCCESS,
+  LOAD_POST_REQUEST,
+  LoadPostRequestAction,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -43,13 +47,13 @@ import axios, { AxiosResponse } from 'axios';
 
 // 게시글 로드
 
-function loadPostAPI(lastId: number | undefined) {
+function loadPostsAPI(lastId: number | undefined) {
   return axios.get(`/posts?lastId=${lastId} || 0`);
 }
 
-function* loadPost(action: LoadPostRequestAction) {
+function* loadPosts(action: LoadPostsRequestAction) {
   try {
-    const result: AxiosResponse = yield call(loadPostAPI, action.data);
+    const result: AxiosResponse = yield call(loadPostsAPI, action.data);
 
     yield put({
       type: LOAD_POSTS_SUCCESS,
@@ -63,8 +67,34 @@ function* loadPost(action: LoadPostRequestAction) {
   }
 }
 
+function* watchLoadPosts() {
+  yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
+}
+
+// 게시글 하나 로드
+
+function loadPostAPI(data: number) {
+  return axios.get(`/post/${data}`);
+}
+
+function* loadPost(action: LoadPostRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(loadPostAPI, action.data);
+
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: LOAD_POST_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
 function* watchLoadPost() {
-  yield takeLatest(LOAD_POSTS_REQUEST, loadPost);
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
 // 게시글 추가
@@ -286,6 +316,7 @@ export default function* postSaga() {
     fork(watchRemovePost),
     fork(watchCommentPost),
     fork(watchRemoveComment),
+    fork(watchLoadPosts),
     fork(watchLoadPost),
     fork(watchLikePost),
     fork(watchUnLikePost),
