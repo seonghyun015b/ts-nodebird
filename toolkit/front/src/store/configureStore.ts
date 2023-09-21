@@ -1,15 +1,15 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { AnyAction, Reducer, configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
-import rootReducer from '../toolkit';
+import rootReducer, { IState } from '../toolkit';
 
 const makeStore = () =>
   configureStore({
-    reducer: rootReducer,
+    reducer: rootReducer as Reducer<IState, AnyAction>,
     devTools: true,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
   });
 
-export default createWrapper(makeStore, {
+export default createWrapper<AppStore>(makeStore, {
   debug: process.env.NODE_ENV !== 'production',
 });
 

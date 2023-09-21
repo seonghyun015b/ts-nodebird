@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { HYDERATE, HYDRATE } from 'next-redux-wrapper';
 
 import axios from 'axios';
 
@@ -245,10 +244,6 @@ const postSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(HYDRATE, (state, action) => ({
-        ...state,
-        ...action.payload.post,
-      }))
       //게시글 로드
       .addCase(loadPostAction.pending, (draft) => {
         draft.loadPostLoading = true;

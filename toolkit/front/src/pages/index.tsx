@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '../store/configureStore';
 import { useDispatch, useSelector } from 'react-redux';
 import PostCard from '../components/PostCard';
 import { loadPostAction } from '../toolkit/post';
-import { loadUserAction } from '../toolkit/user';
+import { loadMyInfoAction, loadUserAction } from '../toolkit/user';
 import wrapper from '../store/configureStore';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
@@ -56,8 +56,19 @@ const Home = () => {
 
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps((store) => async ({ req }) => {
+    const cookie = req ? req.headers.cookie : '';
+    axios.defaults.headers.Cookie = '';
+
+    if (req && cookie) {
+      axios.defaults.headers.Cookie = cookie;
+    }
+
     await store.dispatch(loadPostAction());
-    await store.dispatch(loadUserAction());
+    await store.dispatch(loadMyInfoAction());
+
+    return {
+      props: {},
+    };
   });
 
 export default Home;
