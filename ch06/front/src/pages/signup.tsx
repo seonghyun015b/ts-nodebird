@@ -7,8 +7,11 @@ import { styled } from 'styled-components';
 import useInput from '../hooks/useInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../reducers';
-import { SIGN_UP_REQUEST } from '../reducers/user';
+import { LOAD_MY_INFO_REQUEST, SIGN_UP_REQUEST } from '../reducers/user';
 import Router from 'next/router';
+import axios from 'axios';
+import { SagaStore, wrapper } from '../store/configureStore';
+import { END } from 'redux-saga';
 
 const ErrorMessage = styled.div`
   color: red;
@@ -147,5 +150,30 @@ const Signup = () => {
     </AppLayout>
   );
 };
+
+// SSR
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req ? req.headers.cookie : '';
+
+      axios.defaults.headers.Cookie = cookie as string;
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+
+      store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+      });
+
+      store.dispatch(END);
+      await (store as SagaStore).sagaTask?.toPromise();
+      return {
+        props: {},
+      };
+    }
+);
 
 export default Signup;

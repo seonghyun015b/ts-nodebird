@@ -96,12 +96,23 @@ export interface UserState {
   loadFollowingsError: string | null;
   me: null | UserData | LoadMyInfoSuccessData;
   // 유저 정보
-  userInfo: null | UserData;
+  userInfo: null | LoadUserInfo;
 }
 
 export interface LoginData {
   email: string;
   password: string;
+}
+
+export interface LoadUserInfo {
+  email: string;
+  id: number;
+  nickname: string;
+  Posts: number;
+  Followings: number;
+  Followers: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface FollowType {
@@ -157,7 +168,7 @@ export interface LoadUserInfoRequestAction {
 
 export interface LoadUserInfoSuccessAction {
   type: typeof LOAD_USER_SUCCESS;
-  data: UserData;
+  data: LoadUserInfo;
 }
 
 export interface LoadUserInfoFailureAction {

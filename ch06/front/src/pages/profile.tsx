@@ -6,6 +6,10 @@ import FollowList from '../components/FollowList';
 import { useSelector } from 'react-redux';
 import { RootState } from '../reducers';
 import Router from 'next/router';
+import { SagaStore, wrapper } from '../store/configureStore';
+import { END } from 'redux-saga';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user';
+import axios from 'axios';
 
 const Profile = () => {
   const { me } = useSelector((state: RootState) => state.user);
@@ -33,5 +37,31 @@ const Profile = () => {
     </>
   );
 };
+
+// SSR
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req ? req.headers.cookie : '';
+
+      axios.defaults.headers.Cookie = cookie as string;
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+
+      store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+      });
+
+      store.dispatch(END);
+      await (store as SagaStore).sagaTask?.toPromise();
+
+      return {
+        props: {},
+      };
+    }
+);
 
 export default Profile;

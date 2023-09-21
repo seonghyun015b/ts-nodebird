@@ -52,6 +52,49 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
   })(req, res, next);
 });
 
+// 특정 사용자 유저 정보
+
+router.get('/:userId', async (req, res, next) => {
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      attributes: {
+        exclude: ['password'],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          as: 'Followings',
+          attributes: ['id'],
+        },
+        {
+          model: User,
+          as: 'Followers',
+          attributes: ['id'],
+        },
+      ],
+    });
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+
+      data.Posts = data.Posts.length; // 개인정보 침해 예방
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length;
+
+      res.status(200).json(data);
+    } else {
+      res.status(404).json('존재하지 않는 사용자입니다.');
+    }
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 // 로그아웃 POST/user/logout
 
 router.post('/logout', isLoggedIn, (req, res) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import wrapper from '../store/configureStore';
+import { wrapper } from '../store/configureStore';
 
 const NodeBird = ({ Component, pageProps }: AppProps) => {
   return (
