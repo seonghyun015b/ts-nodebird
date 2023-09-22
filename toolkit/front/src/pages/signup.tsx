@@ -9,7 +9,9 @@ import useInput from '../hooks/useInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/configureStore';
 import Router from 'next/router';
-import { signupAction } from '../toolkit/user';
+import { loadMyInfoAction, signupAction } from '../toolkit/user';
+import axios from 'axios';
+import wrapper from '../store/configureStore';
 
 const ErrorMessage = styled.div`
   color: red;
@@ -142,5 +144,24 @@ const Signup = () => {
     </AppLayout>
   );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req ? req.headers.cookie : '';
+
+      axios.defaults.headers.Cookie = cookie as string;
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+
+      await store.dispatch(loadMyInfoAction());
+
+      return {
+        props: {},
+      };
+    }
+);
 
 export default Signup;

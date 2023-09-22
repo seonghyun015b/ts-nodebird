@@ -6,6 +6,9 @@ import FollowList from '../components/FollowList';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/configureStore';
 import Router from 'next/router';
+import wrapper from '../store/configureStore';
+import axios from 'axios';
+import { loadMyInfoAction } from '../toolkit/user';
 
 const Profile = () => {
   const { me } = useSelector((state: RootState) => state.user);
@@ -33,5 +36,26 @@ const Profile = () => {
     </>
   );
 };
+
+//SSR
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req ? req.headers.cookie : '';
+
+      axios.defaults.headers.Cookie = cookie as string;
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+
+      await store.dispatch(loadMyInfoAction());
+
+      return {
+        props: {},
+      };
+    }
+);
 
 export default Profile;

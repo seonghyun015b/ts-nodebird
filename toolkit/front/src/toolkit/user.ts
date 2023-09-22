@@ -192,10 +192,6 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (build) => {
     build
-      // .addCase(HYDRATE, (state, action) => ({
-      //   ...state,
-      //   ...action.payload.user,
-      // }))
       // 로그인
       .addCase(loginAction.pending, (draft) => {
         draft.logInLoading = true;
