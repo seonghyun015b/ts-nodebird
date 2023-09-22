@@ -26,7 +26,6 @@ import {
   UNFOLLOW_FAILURE,
   UNFOLLOW_REQUEST,
   LoginRequestAction,
-  UserData,
   LoginData,
   FollowRequestAction,
   SignupRequestAction,
@@ -50,7 +49,6 @@ import {
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE,
   LOAD_USER_REQUEST,
-  LoadUserInfoSuccessAction,
   LoadUserInfoRequestAction,
   FollowType,
 } from '../reducers/user';

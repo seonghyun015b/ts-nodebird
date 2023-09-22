@@ -26,10 +26,12 @@ interface ListData {
 
 interface FollowListProp {
   header: string;
+  onClickMore: () => void;
+  loading: boolean;
   data: ListData[];
 }
 
-const FollowList = ({ header, data }: FollowListProp) => {
+const FollowList = ({ header, data, onClickMore, loading }: FollowListProp) => {
   const listGrid = useMemo(() => ({ gutter: 4, xs: 2, md: 3 }), []);
 
   const listStyle = useMemo(() => ({ marginBottom: 20 }), []);
@@ -57,7 +59,9 @@ const FollowList = ({ header, data }: FollowListProp) => {
       header={<div>{header}</div>}
       loadMore={
         <ListDiv>
-          <Button>더 보기</Button>
+          <Button onClick={onClickMore} loading={loading}>
+            더 보기
+          </Button>
         </ListDiv>
       }
       bordered

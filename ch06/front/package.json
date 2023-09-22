@@ -35,6 +35,7 @@
     "redux-saga": "^1.2.3",
     "shortid": "^2.2.16",
     "styled-components": "^6.0.6",
+    "swr": "^2.2.2",
     "typescript": "5.1.6"
   },
   "devDependencies": {
