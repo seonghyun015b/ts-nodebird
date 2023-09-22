@@ -102,6 +102,11 @@ export interface PostState {
   unlikePostLoading: boolean;
   unlikePostDone: boolean;
   unlikePostError: string | null | undefined;
+
+  // 해시태그 로딩
+  loadHashtagPostsLoading: boolean;
+  loadHashtagPostsDone: boolean;
+  loadHashtagPostsError: string | null | undefined;
 }
 
 export const initialState: PostState = {
@@ -162,6 +167,11 @@ export const initialState: PostState = {
   unlikePostLoading: false,
   unlikePostDone: false,
   unlikePostError: null,
+
+  // 해시태그 로딩
+  loadHashtagPostsLoading: false,
+  loadHashtagPostsDone: false,
+  loadHashtagPostsError: null,
 };
 
 // 게시글 불러오기
@@ -188,7 +198,7 @@ export const loadPostAction = createAsyncThunk(
 
 interface LoadUserActionProp {
   data: string;
-  lastId: null | number;
+  lastId: null | string | number;
 }
 
 export const loadUserPostAction = createAsyncThunk(
@@ -197,6 +207,24 @@ export const loadUserPostAction = createAsyncThunk(
     const response = await axios.get(
       `/user/${data}/posts?lastId=${lastId || 0}`
     );
+    return response.data;
+  }
+);
+
+// 해시태그 불러오기
+
+interface LoadHashtagProp {
+  data: string;
+  lastId: null | string | number;
+}
+
+export const loadHashtagAction = createAsyncThunk(
+  'get/hashtag',
+  async ({ data, lastId }: LoadHashtagProp) => {
+    const response = await axios.get(
+      `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`
+    );
+
     return response.data;
   }
 );
@@ -343,6 +371,22 @@ const postSlice = createSlice({
       .addCase(loadUserPostAction.rejected, (draft, action) => {
         draft.loadUserPostLoading = false;
         draft.loadUserPostError = action.error.message;
+      })
+
+      // 해시태그 로드
+      .addCase(loadHashtagAction.pending, (draft) => {
+        draft.loadHashtagPostsLoading = true;
+        draft.loadHashtagPostsDone = false;
+        draft.loadHashtagPostsError = null;
+      })
+      .addCase(loadHashtagAction.fulfilled, (draft, action) => {
+        draft.loadHashtagPostsLoading = false;
+        draft.loadHashtagPostsDone = true;
+        draft.mainPosts = draft.mainPosts.concat(action.payload);
+      })
+      .addCase(loadHashtagAction.rejected, (draft, action) => {
+        draft.loadHashtagPostsLoading = false;
+        draft.loadHashtagPostsError = action.error.message;
       })
 
       // 게시글 추가
