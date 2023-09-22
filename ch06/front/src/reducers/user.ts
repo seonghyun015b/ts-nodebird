@@ -164,11 +164,12 @@ export interface LoadMyInfoFailureAction {
 
 export interface LoadUserInfoRequestAction {
   type: typeof LOAD_USER_REQUEST;
+  data: number;
 }
 
 export interface LoadUserInfoSuccessAction {
   type: typeof LOAD_USER_SUCCESS;
-  data: LoadUserInfo;
+  data: LoadUserInfo | null;
 }
 
 export interface LoadUserInfoFailureAction {

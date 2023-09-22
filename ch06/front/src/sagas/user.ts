@@ -51,6 +51,8 @@ import {
   LOAD_USER_FAILURE,
   LOAD_USER_REQUEST,
   LoadUserInfoSuccessAction,
+  LoadUserInfoRequestAction,
+  FollowType,
 } from '../reducers/user';
 
 // 유저 정보 불러오기
@@ -66,10 +68,10 @@ function* loadMyInfo() {
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOAD_MY_INFO_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -80,21 +82,21 @@ function* watchloadMyInfo() {
 
 // 다른사람 정보 불러오기
 
-function loadUserAPI(data: UserData) {
+function loadUserAPI(data: number) {
   return axios.get(`/user/${data}`);
 }
 
-function* loadUser(action: LoadUserInfoSuccessAction) {
+function* loadUser(action: LoadUserInfoRequestAction) {
   try {
     const result: AxiosResponse = yield call(loadUserAPI, action.data);
     yield put({
       type: LOAD_USER_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOAD_USER_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -116,10 +118,10 @@ function* logIn(action: LoginRequestAction) {
       type: LOG_IN_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOG_IN_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -140,10 +142,10 @@ function* logOut() {
     yield put({
       type: LOG_OUT_SUCCESS,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOG_OUT_FAILURE,
-      data: err.response.data,
+      error: err,
     });
   }
 }
@@ -168,10 +170,10 @@ function* signUp(action: SignupRequestAction) {
     yield put({
       type: SIGN_UP_SUCCESS,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: SIGN_UP_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -193,10 +195,10 @@ function* follow(action: FollowRequestAction) {
       type: FOLLOW_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: FOLLOW_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -218,10 +220,10 @@ function* unfollow(action: UnfollowRequestAction) {
       type: UNFOLLOW_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: UNFOLLOW_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -232,8 +234,10 @@ function* watchUnFollow() {
 
 // 팔로워 목록 로딩
 
-function loadFollowersAPI(data) {
-  return axios.get('/user/followers', data);
+function loadFollowersAPI(
+  data: { id: number; nickname?: string; Follow?: FollowType[] }[]
+) {
+  return axios.get('/user/followers', { data });
 }
 
 function* loadFollowers(action: LoadFollowersSuccessAction) {
@@ -243,10 +247,10 @@ function* loadFollowers(action: LoadFollowersSuccessAction) {
       type: LOAD_FOLLOWERS_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOAD_FOLLOWERS_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -257,8 +261,10 @@ function* watchLoadFollowers() {
 
 // 팔로잉 목록 로딩
 
-function loadFollowingsAPI(data) {
-  return axios.get('/user/followers', data);
+function loadFollowingsAPI(
+  data: { id: number; nickname?: string; Follow?: FollowType[] }[]
+) {
+  return axios.get('/user/followers', { data });
 }
 
 function* loadFollowings(action: LoadFollowingsSuccessAction) {
@@ -268,10 +274,10 @@ function* loadFollowings(action: LoadFollowingsSuccessAction) {
       type: LOAD_FOLLOWINGS_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOAD_FOLLOWINGS_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -293,10 +299,10 @@ function* removeFollower(action: RemoveFollowerRequestAction) {
       type: REMOVE_FOLLOWER_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: REMOVE_FOLLOWER_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -318,10 +324,10 @@ function* changeNickname(action: ChangeNickNameRequestAction) {
       type: CHANGE_NICKNAME_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: CHANGE_NICKNAME_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }

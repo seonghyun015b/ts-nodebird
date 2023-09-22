@@ -67,10 +67,10 @@ function* loadPosts(action: LoadPostsRequestAction) {
       type: LOAD_POSTS_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOAD_POSTS_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -96,10 +96,10 @@ function* loadUserPost(action: LoadUserPostRequestAction) {
       type: LOAD_USER_POSTS_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOAD_USER_POSTS_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -122,10 +122,10 @@ function* loadPost(action: LoadPostRequestAction) {
       type: LOAD_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOAD_POST_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -156,10 +156,10 @@ function* loadHashtag(action: LoadHashtagRequestAction) {
       type: LOAD_HASHTAG_POSTS_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LOAD_HASHTAG_POSTS_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -214,10 +214,10 @@ function* removePost(action: RemovePostRequestAction) {
       type: REMOVE_POST_OF_ME,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: REMOVE_POST_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -243,10 +243,10 @@ function* addComment(action: AddCommentRequestAction) {
       type: ADD_COMMENT_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: ADD_COMMENT_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -269,10 +269,10 @@ function* removeComment(action: RemoveCommentRequestAction) {
       type: REMOVE_COMMENT_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: REMOVE_COMMENT_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -294,10 +294,10 @@ function* likePost(action: LikePostRequestAction) {
       type: LIKE_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: LIKE_POST_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -319,10 +319,10 @@ function* unlikePost(action: UnLikePostRequestAction) {
       type: UNLIKE_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: UNLIKE_POST_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -344,10 +344,10 @@ function* uploadImage(action: UploadImagesRequestAction) {
       type: UPLOAD_IMAGES_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
@@ -369,10 +369,10 @@ function* retweet(action: RetweetRequestAction) {
       type: RETWEET_SUCCESS,
       data: result.data,
     });
-  } catch (err: any) {
+  } catch (err) {
     yield put({
       type: RETWEET_FAILURE,
-      error: err.response.data,
+      error: err,
     });
   }
 }
