@@ -2,8 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { MainPost } from './post';
 
-import { HYDRATE } from 'next-redux-wrapper';
-
 export interface LoginData {
   email: string;
   password: string;
@@ -32,9 +30,9 @@ export interface LoadMyInfoData {
   email: string;
   id: number;
   nickname: string;
-  Posts: { id: number }[];
-  Followings: { id: number }[];
-  Followers: { id: number }[];
+  Posts: number;
+  Followings: number;
+  Followers: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -74,7 +72,7 @@ export interface UserInitialState {
   changeNicknameError: string | undefined | null;
 
   // 유저 상태
-  me: null | UserData | LoadMyInfoData;
+  me: null | UserData;
   // 유저 정보 불러오기
   userInfo: null | LoadMyInfoData;
 }

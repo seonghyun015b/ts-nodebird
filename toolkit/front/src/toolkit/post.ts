@@ -62,6 +62,11 @@ export interface PostState {
   // 게시글 초기 로딩
   singlePost: null | MainPost;
 
+  // 특정 유저 게시글 로딩
+  loadUserPostLoading: boolean;
+  loadUserPostDone: boolean;
+  loadUserPostError: string | null | undefined;
+
   // 추가 로딩
   hasMorePosts: boolean;
 
@@ -111,10 +116,16 @@ export const initialState: PostState = {
   loadPostError: null,
   // 게시글 초기 로딩
   singlePost: null,
+
   // 게시글 로딩
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+
+  // 특정 유저 게시글 로딩
+  loadUserPostLoading: false,
+  loadUserPostDone: false,
+  loadUserPostError: null,
 
   // 추가 로딩
   hasMorePosts: false,
@@ -163,10 +174,29 @@ export const loadPostsAction = createAsyncThunk(
   }
 );
 
+// 특정 게시글 불러오기
+
 export const loadPostAction = createAsyncThunk(
   'post/loadPost',
   async (data: string) => {
     const response = await axios.get(`/post/${data}`);
+    return response.data;
+  }
+);
+
+// 특정 유저 게시글 불러오기
+
+interface LoadUserActionProp {
+  data: string;
+  lastId: null | number;
+}
+
+export const loadUserPostAction = createAsyncThunk(
+  'user/post',
+  async ({ data, lastId }: LoadUserActionProp) => {
+    const response = await axios.get(
+      `/user/${data}/posts?lastId=${lastId || 0}`
+    );
     return response.data;
   }
 );
@@ -297,6 +327,22 @@ const postSlice = createSlice({
       .addCase(loadPostAction.rejected, (draft, action) => {
         draft.loadPostLoading = false;
         draft.loadPostError = action.error.message;
+      })
+
+      // 특정 유저 게시글 로드
+      .addCase(loadUserPostAction.pending, (draft) => {
+        draft.loadUserPostLoading = true;
+        draft.loadUserPostDone = false;
+        draft.loadUserPostError = null;
+      })
+      .addCase(loadUserPostAction.fulfilled, (draft, action) => {
+        draft.loadUserPostLoading = false;
+        draft.loadUserPostDone = true;
+        draft.mainPosts = draft.mainPosts.concat(action.payload);
+      })
+      .addCase(loadUserPostAction.rejected, (draft, action) => {
+        draft.loadUserPostLoading = false;
+        draft.loadUserPostError = action.error.message;
       })
 
       // 게시글 추가
