@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { HYDRATE } from 'next-redux-wrapper';
 
 import axios from 'axios';
 
@@ -18,7 +17,7 @@ export interface MainPost {
   UserId: number;
   User: { id: number; nickname: string };
   content: string;
-  Images: { src: string }[] | [];
+  Images: { src: string }[];
   Likers: {
     id: number;
     Like?: {
@@ -50,16 +49,18 @@ export interface PostState {
   imagePaths: string[];
   postAdded: boolean;
 
-  // 게시글 로딩(lastId)
+  // 게시글 하나 로딩
   loadPostLoading: boolean;
   loadPostDone: boolean;
   loadPostError: string | null | undefined;
-  // 게시글 로딩
+
+  // 게시글 여러개 로딩
   loadPostsLoading: boolean;
   loadPostsDone: boolean;
   loadPostsError: string | null | undefined;
+
   // 게시글 초기 로딩
-  singlePost: null | string;
+  singlePost: null | MainPost;
 
   // 추가 로딩
   hasMorePosts: boolean;
@@ -154,7 +155,7 @@ export const initialState: PostState = {
 
 // 게시글 불러오기
 
-export const loadPostAction = createAsyncThunk(
+export const loadPostsAction = createAsyncThunk(
   '/load/loadPosts',
   async (lastId: number | undefined) => {
     const response = await axios.get(`/posts?lastId=${lastId || 0}`);
@@ -162,10 +163,13 @@ export const loadPostAction = createAsyncThunk(
   }
 );
 
-// export const loadPost = createAsyncThunk('post/loadPost', async (data) => {
-//   const response = await axios.get(`/post/${data}`);
-//   return response.data;
-// });
+export const loadPostAction = createAsyncThunk(
+  'post/loadPost',
+  async (data: string) => {
+    const response = await axios.get(`/post/${data}`);
+    return response.data;
+  }
+);
 
 // 게시글 작성
 
@@ -262,11 +266,24 @@ const postSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // .addCase(HYDRATE, (state, action) => ({
-      //   ...state,
-      //   ...action.payload.post,
-      // }))
       //게시글 로드 (lastId)
+      .addCase(loadPostsAction.pending, (draft) => {
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
+      })
+      .addCase(loadPostsAction.fulfilled, (draft, action) => {
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        draft.mainPosts = draft.mainPosts.concat(action.payload);
+        draft.hasMorePosts = draft.mainPosts.length === 10;
+      })
+      .addCase(loadPostsAction.rejected, (draft, action) => {
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error.message;
+      })
+
+      // 특정 게시글 로딩
       .addCase(loadPostAction.pending, (draft) => {
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
@@ -275,30 +292,12 @@ const postSlice = createSlice({
       .addCase(loadPostAction.fulfilled, (draft, action) => {
         draft.loadPostLoading = false;
         draft.loadPostDone = true;
-        draft.mainPosts = draft.mainPosts.concat(action.payload);
-        draft.hasMorePosts = draft.mainPosts.length === 10;
-        // draft.singlePost = action.payload;
+        draft.singlePost = action.payload;
       })
       .addCase(loadPostAction.rejected, (draft, action) => {
         draft.loadPostLoading = false;
         draft.loadPostError = action.error.message;
       })
-      // 게시글 로딩
-      // .addCase(loadPost.pending, (draft) => {
-      //   draft.loadPostsLoading = true;
-      //   draft.loadPostsDone = false;
-      //   draft.loadPostsError = null;
-      // })
-      // .addCase(loadPost.fulfilled, (draft, action) => {
-      //   draft.loadPostsLoading = false;
-      //   draft.loadPostsDone = true;
-      //   draft.mainPosts = draft.mainPosts.concat(action.payload);
-      //   draft.hasMorePosts = draft.mainPosts.length === 10;
-      // })
-      // .addCase(loadPost.rejected, (draft, action) => {
-      //   draft.loadPostsLoading = false;
-      //   draft.loadPostsError = action.error.message;
-      // })
 
       // 게시글 추가
       .addCase(addPostAction.pending, (draft) => {
@@ -402,7 +401,6 @@ const postSlice = createSlice({
         draft.uploadImageLoading = false;
         draft.uploadImageDone = true;
         draft.imagePaths = action.payload;
-        console.log(action.payload);
       })
       .addCase(upLoadImageAction.rejected, (draft, action) => {
         draft.uploadImageLoading = false;

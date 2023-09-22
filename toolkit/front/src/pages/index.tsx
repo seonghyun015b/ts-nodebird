@@ -4,8 +4,8 @@ import PostForm from '../components/PostForm';
 import { AppDispatch, RootState } from '../store/configureStore';
 import { useDispatch, useSelector } from 'react-redux';
 import PostCard from '../components/PostCard';
-import { loadPostAction } from '../toolkit/post';
-import { loadMyInfoAction, loadUserAction } from '../toolkit/user';
+import { loadPostsAction } from '../toolkit/post';
+import { loadMyInfoAction } from '../toolkit/user';
 import wrapper from '../store/configureStore';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
@@ -15,7 +15,7 @@ const Home = () => {
 
   const { me } = useSelector((state: RootState) => state.user);
 
-  const { mainPosts, hasMorePosts, loadPostLoading } = useSelector(
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state: RootState) => state.post
   );
 
@@ -27,8 +27,8 @@ const Home = () => {
       ) {
         const lastId = mainPosts[mainPosts.length - 1]?.id;
 
-        if (hasMorePosts && !loadPostLoading) {
-          dispatch(loadPostAction(lastId));
+        if (hasMorePosts && !loadPostsLoading) {
+          dispatch(loadPostsAction(lastId));
         }
       }
     }
@@ -38,7 +38,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [hasMorePosts, loadPostLoading, mainPosts]);
+  }, [hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <>
@@ -63,7 +63,7 @@ export const getServerSideProps: GetServerSideProps =
       axios.defaults.headers.Cookie = cookie;
     }
 
-    await store.dispatch(loadPostAction());
+    await store.dispatch(loadPostsAction());
     await store.dispatch(loadMyInfoAction());
 
     return {
