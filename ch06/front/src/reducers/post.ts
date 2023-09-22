@@ -5,6 +5,12 @@ export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
 
+// 특정 유저 게시글 로드
+
+export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
+export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
+export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
 // 특정 게시글 로드
 export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
@@ -70,6 +76,24 @@ export interface LoadPostsSuccessAction {
 
 export interface LoadPostsFailureAction {
   type: typeof LOAD_POSTS_FAILURE;
+  error: string;
+}
+
+// 특정 유저 게시글 로드
+
+export interface LoadUserPostRequestAction {
+  type: typeof LOAD_USER_POSTS_REQUEST;
+  data: number;
+  lastId: number | undefined;
+}
+
+export interface LoadUserPostSuccessAction {
+  type: typeof LOAD_USER_POSTS_SUCCESS;
+  data: IMainPost[];
+}
+
+export interface LoadUserPostFailureAction {
+  type: typeof LOAD_USER_POSTS_FAILURE;
   error: string;
 }
 
@@ -242,6 +266,10 @@ export type PostAcionTypes =
   | LoadPostRequestAction
   | LoadPostSuccessAction
   | LoadPostFailureAction
+  // 특정 유저 게시글 로드
+  | LoadUserPostRequestAction
+  | LoadUserPostSuccessAction
+  | LoadUserPostFailureAction
   // 게시글 추가
   | AddPostRequestAction
   | AddPostSuccessAction
@@ -325,6 +353,10 @@ export interface PostState {
   addPostLoading: boolean;
   addPostDone: boolean;
   addPostError: string | null;
+  // 특정 유저 게시글 로드
+  loadUserPostLoading: boolean;
+  loadUserPostDone: boolean;
+  loadUserPostError: string | null;
   // 게시글 불러오기
   loadPostsLoading: boolean;
   loadPostsDone: boolean;
@@ -377,6 +409,11 @@ export const initialState: PostState = {
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
+
+  // 특정 유저 게시글 로드
+  loadUserPostLoading: false,
+  loadUserPostDone: false,
+  loadUserPostError: null,
 
   // 게시글 불러오기
   loadPostsLoading: false,
@@ -535,17 +572,22 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         break;
 
       // 게시글 로드
+      case LOAD_USER_POSTS_REQUEST:
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
         draft.loadPostsError = null;
         break;
+
+      case LOAD_USER_POSTS_SUCCESS:
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
         draft.mainPosts = draft.mainPosts.concat(action.data);
         draft.hasMorePosts = draft.mainPosts.length === 10;
         break;
+
+      case LOAD_USER_POSTS_FAILURE:
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;

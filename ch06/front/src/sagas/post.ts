@@ -40,6 +40,10 @@ import {
   LOAD_POST_SUCCESS,
   LOAD_POST_REQUEST,
   LoadPostRequestAction,
+  LOAD_USER_POSTS_FAILURE,
+  LOAD_USER_POSTS_SUCCESS,
+  LOAD_USER_POSTS_REQUEST,
+  LoadUserPostRequestAction,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -69,6 +73,35 @@ function* loadPosts(action: LoadPostsRequestAction) {
 
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
+}
+
+// 특정 유저 게시글 로드
+
+function loadUserPostAPI(data: number, lastId: number | undefined) {
+  return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`);
+}
+
+function* loadUserPost(action: LoadUserPostRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(
+      loadUserPostAPI,
+      action.data,
+      action.lastId
+    );
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function* watchLoadUserPost() {
+  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPost);
 }
 
 // 게시글 하나 로드
@@ -322,5 +355,6 @@ export default function* postSaga() {
     fork(watchUnLikePost),
     fork(watchUploadImages),
     fork(watchRetweet),
+    fork(watchLoadUserPost),
   ]);
 }
