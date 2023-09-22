@@ -11,6 +11,12 @@ export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
 export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
 export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
 
+// 해시태그 로드
+
+export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
+export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
+export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
+
 // 특정 게시글 로드
 export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
@@ -94,6 +100,24 @@ export interface LoadUserPostSuccessAction {
 
 export interface LoadUserPostFailureAction {
   type: typeof LOAD_USER_POSTS_FAILURE;
+  error: string;
+}
+
+// 해시태그 로드
+
+export interface LoadHashtagRequestAction {
+  type: typeof LOAD_HASHTAG_POSTS_REQUEST;
+  data: number;
+  lastId: number | undefined;
+}
+
+export interface LoadHashtagSuccessAction {
+  type: typeof LOAD_HASHTAG_POSTS_SUCCESS;
+  data: IMainPost;
+}
+
+export interface LoadHashtagFailureAction {
+  type: typeof LOAD_HASHTAG_POSTS_FAILURE;
   error: string;
 }
 
@@ -270,6 +294,10 @@ export type PostAcionTypes =
   | LoadUserPostRequestAction
   | LoadUserPostSuccessAction
   | LoadUserPostFailureAction
+  // 해시태그 로드
+  | LoadHashtagRequestAction
+  | LoadHashtagSuccessAction
+  | LoadHashtagFailureAction
   // 게시글 추가
   | AddPostRequestAction
   | AddPostSuccessAction
@@ -357,6 +385,10 @@ export interface PostState {
   loadUserPostLoading: boolean;
   loadUserPostDone: boolean;
   loadUserPostError: string | null;
+  // 해시태그 로드
+  loadHashtagPostsLoading: boolean;
+  loadHashtagPostsDone: boolean;
+  loadHashtagPostsError: string | null;
   // 게시글 불러오기
   loadPostsLoading: boolean;
   loadPostsDone: boolean;
@@ -414,6 +446,11 @@ export const initialState: PostState = {
   loadUserPostLoading: false,
   loadUserPostDone: false,
   loadUserPostError: null,
+
+  // 해시태그 로드
+  loadHashtagPostsLoading: false,
+  loadHashtagPostsDone: false,
+  loadHashtagPostsError: null,
 
   // 게시글 불러오기
   loadPostsLoading: false,
@@ -573,6 +610,7 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
 
       // 게시글 로드
       case LOAD_USER_POSTS_REQUEST:
+      case LOAD_HASHTAG_POSTS_REQUEST:
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
@@ -580,6 +618,7 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         break;
 
       case LOAD_USER_POSTS_SUCCESS:
+      case LOAD_HASHTAG_POSTS_SUCCESS:
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
@@ -588,6 +627,7 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         break;
 
       case LOAD_USER_POSTS_FAILURE:
+      case LOAD_HASHTAG_POSTS_FAILURE:
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
@@ -608,6 +648,7 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         draft.loadPostLoading = false;
         draft.loadPostError = action.error;
         break;
+
       // 게시글 추가
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
@@ -624,6 +665,7 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         draft.addPostLoading = false;
         draft.addPostError = action.error;
         break;
+
       // 게시글 삭제
       case REMOVE_POST_REQUEST:
         draft.removePostLoading = true;
@@ -641,6 +683,7 @@ const reducer = (state = initialState, action: PostAcionTypes) => {
         draft.removePostLoading = false;
         draft.removePostError = action.error;
         break;
+
       // 댓글 추가
       case ADD_COMMENT_REQUEST:
         draft.addCommentLoading = true;

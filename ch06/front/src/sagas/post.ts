@@ -44,6 +44,10 @@ import {
   LOAD_USER_POSTS_SUCCESS,
   LOAD_USER_POSTS_REQUEST,
   LoadUserPostRequestAction,
+  LoadHashtagRequestAction,
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
 } from '../reducers/post';
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
@@ -128,6 +132,40 @@ function* loadPost(action: LoadPostRequestAction) {
 
 function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
+}
+
+// 해시태그 로드
+
+// 게시글 하나 로드
+
+function loadHashtagAPI(data: number, lastId: number | undefined) {
+  return axios.get(
+    `/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`
+  );
+}
+
+function* loadHashtag(action: LoadHashtagRequestAction) {
+  try {
+    const result: AxiosResponse = yield call(
+      loadHashtagAPI,
+      action.data,
+      action.lastId
+    );
+
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+function* watchLoadHashtag() {
+  yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtag);
 }
 
 // 게시글 추가
@@ -356,5 +394,6 @@ export default function* postSaga() {
     fork(watchUploadImages),
     fork(watchRetweet),
     fork(watchLoadUserPost),
+    fork(watchLoadHashtag),
   ]);
 }
