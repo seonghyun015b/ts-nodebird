@@ -48,7 +48,7 @@ import axios, { AxiosResponse } from 'axios';
 // 게시글 로드
 
 function loadPostsAPI(lastId: number | undefined) {
-  return axios.get(`/posts?lastId=${lastId} || 0`);
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action: LoadPostsRequestAction) {

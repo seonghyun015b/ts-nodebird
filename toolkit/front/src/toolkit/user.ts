@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { MainPost } from './post';
 
+import { HYDRATE } from 'next-redux-wrapper';
+
 export interface LoginData {
   email: string;
   password: string;
@@ -192,7 +194,10 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (build) => {
     build
-
+      // .addCase(HYDRATE, (state, action) => ({
+      //   ...state,
+      //   ...action.payload.user,
+      // }))
       // 로그인
       .addCase(loginAction.pending, (draft) => {
         draft.logInLoading = true;
@@ -233,7 +238,7 @@ const userSlice = createSlice({
       .addCase(loadUserAction.fulfilled, (draft, action) => {
         draft.loadUserLoading = false;
         draft.loadUserDone = true;
-        draft.userInfo = action.payload || null;
+        draft.me = action.payload || null;
       })
       .addCase(loadUserAction.rejected, (draft, action) => {
         draft.loadUserLoading = false;

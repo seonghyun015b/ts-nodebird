@@ -28,7 +28,7 @@ const Home = () => {
         const lastId = mainPosts[mainPosts.length - 1]?.id;
 
         if (hasMorePosts && !loadPostLoading) {
-          dispatch(loadPostAction());
+          dispatch(loadPostAction(lastId));
         }
       }
     }

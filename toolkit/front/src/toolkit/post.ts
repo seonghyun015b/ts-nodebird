@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 import axios from 'axios';
 
@@ -49,10 +50,16 @@ export interface PostState {
   imagePaths: string[];
   postAdded: boolean;
 
-  // 게시글 로딩
+  // 게시글 로딩(lastId)
   loadPostLoading: boolean;
   loadPostDone: boolean;
   loadPostError: string | null | undefined;
+  // 게시글 로딩
+  loadPostsLoading: boolean;
+  loadPostsDone: boolean;
+  loadPostsError: string | null | undefined;
+  // 게시글 초기 로딩
+  singlePost: null | string;
 
   // 추가 로딩
   hasMorePosts: boolean;
@@ -97,10 +104,16 @@ export const initialState: PostState = {
   imagePaths: [],
   postAdded: false,
 
-  // 게시글 로딩
+  // 게시글 로딩(lastId)
   loadPostLoading: false,
   loadPostDone: false,
   loadPostError: null,
+  // 게시글 초기 로딩
+  singlePost: null,
+  // 게시글 로딩
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
 
   // 추가 로딩
   hasMorePosts: false,
@@ -144,10 +157,15 @@ export const initialState: PostState = {
 export const loadPostAction = createAsyncThunk(
   '/load/loadPosts',
   async (lastId: number | undefined) => {
-    const response = await axios.get(`/posts?lastId=${lastId}||0`);
+    const response = await axios.get(`/posts?lastId=${lastId || 0}`);
     return response.data;
   }
 );
+
+// export const loadPost = createAsyncThunk('post/loadPost', async (data) => {
+//   const response = await axios.get(`/post/${data}`);
+//   return response.data;
+// });
 
 // 게시글 작성
 
@@ -244,7 +262,11 @@ const postSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //게시글 로드
+      // .addCase(HYDRATE, (state, action) => ({
+      //   ...state,
+      //   ...action.payload.post,
+      // }))
+      //게시글 로드 (lastId)
       .addCase(loadPostAction.pending, (draft) => {
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
@@ -255,11 +277,28 @@ const postSlice = createSlice({
         draft.loadPostDone = true;
         draft.mainPosts = draft.mainPosts.concat(action.payload);
         draft.hasMorePosts = draft.mainPosts.length === 10;
+        // draft.singlePost = action.payload;
       })
       .addCase(loadPostAction.rejected, (draft, action) => {
         draft.loadPostLoading = false;
         draft.loadPostError = action.error.message;
       })
+      // 게시글 로딩
+      // .addCase(loadPost.pending, (draft) => {
+      //   draft.loadPostsLoading = true;
+      //   draft.loadPostsDone = false;
+      //   draft.loadPostsError = null;
+      // })
+      // .addCase(loadPost.fulfilled, (draft, action) => {
+      //   draft.loadPostsLoading = false;
+      //   draft.loadPostsDone = true;
+      //   draft.mainPosts = draft.mainPosts.concat(action.payload);
+      //   draft.hasMorePosts = draft.mainPosts.length === 10;
+      // })
+      // .addCase(loadPost.rejected, (draft, action) => {
+      //   draft.loadPostsLoading = false;
+      //   draft.loadPostsError = action.error.message;
+      // })
 
       // 게시글 추가
       .addCase(addPostAction.pending, (draft) => {

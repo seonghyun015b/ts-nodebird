@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { AnyAction, CombinedState } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
-
 import userSlice, { UserInitialState } from './user';
 import postSlice, { PostState } from './post';
+import { AnyAction, CombinedState } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
 import { HYDRATE } from 'next-redux-wrapper';
 
 axios.defaults.baseURL = 'http://localhost:3065';
@@ -22,11 +21,11 @@ const rootReducer = (
     case HYDRATE:
       return action.payload;
     default: {
-      const combineReducer = combineReducers({
+      const combinedReducer = combineReducers({
         user: userSlice.reducer,
         post: postSlice.reducer,
       });
-      return combineReducer(state, action);
+      return combinedReducer(state, action);
     }
   }
 };
