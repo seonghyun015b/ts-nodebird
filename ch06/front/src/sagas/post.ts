@@ -70,7 +70,7 @@ function* loadPosts(action: LoadPostsRequestAction) {
   } catch (err: any) {
     yield put({
       type: LOAD_POSTS_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -125,7 +125,7 @@ function* loadPost(action: LoadPostRequestAction) {
   } catch (err: any) {
     yield put({
       type: LOAD_POST_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -159,7 +159,7 @@ function* loadHashtag(action: LoadHashtagRequestAction) {
   } catch (err: any) {
     yield put({
       type: LOAD_HASHTAG_POSTS_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -188,7 +188,7 @@ function* addPost(action: AddPostRequestAction) {
   } catch (err: any) {
     yield put({
       type: ADD_POST_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -217,7 +217,7 @@ function* removePost(action: RemovePostRequestAction) {
   } catch (err: any) {
     yield put({
       type: REMOVE_POST_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -246,7 +246,7 @@ function* addComment(action: AddCommentRequestAction) {
   } catch (err: any) {
     yield put({
       type: ADD_COMMENT_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -272,7 +272,7 @@ function* removeComment(action: RemoveCommentRequestAction) {
   } catch (err: any) {
     yield put({
       type: REMOVE_COMMENT_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
