@@ -29,6 +29,9 @@ import {
 import { styled } from 'styled-components';
 import CommentCard from './CommentCard';
 
+import dayjs from 'dayjs';
+dayjs.locale('ko');
+
 const PostCardWrapper = styled.div`
   margin-bottom: 20px;
 `;
@@ -111,6 +114,7 @@ const PostCard = ({ post }: PostCardProp) => {
       >
         {post.RetweetId && post.Retweet ? (
           <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+            <div style={{ float: 'right' }}>{dayjs(post.createdAt).format('YYYY.MM.DD')}</div>
             <Card.Meta
               avatar={
                 <Link href={`/user/${post.Retweet.User.id}`}>
@@ -122,15 +126,18 @@ const PostCard = ({ post }: PostCardProp) => {
             />
           </Card>
         ) : (
-          <Card.Meta
-            avatar={
-              <Link href={`/user/${post.User.id}`}>
-                <Avatar>{post.User.nickname[0]}</Avatar>
-              </Link>
-            }
-            title={post.User.nickname}
-            description={<PostCardContent postData={post.content} />}
-          />
+          <>
+            <div style={{ float: 'right' }}>{dayjs(post.createdAt).format('YYYY.MM.DD')}</div>
+            <Card.Meta
+              avatar={
+                <Link href={`/user/${post.User.id}`}>
+                  <Avatar>{post.User.nickname[0]}</Avatar>
+                </Link>
+              }
+              title={post.User.nickname}
+              description={<PostCardContent postData={post.content} />}
+            />
+          </>
         )}
       </Card>
       {commentFormOpened && (
