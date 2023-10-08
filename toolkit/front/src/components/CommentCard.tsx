@@ -3,6 +3,7 @@ import { List, Avatar, Button } from 'antd';
 import { Comment, removeCommentAction } from '../toolkit/post';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/configureStore';
+import Link from 'next/link';
 
 interface CommentCardProp {
   item: Comment;
@@ -21,7 +22,11 @@ const CommentCard = ({ item }: CommentCardProp) => {
     <List.Item>
       <List.Item.Meta
         title={item.User.nickname}
-        avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+        avatar={
+          <Link href={`/user/${item.User.id}`}>
+            <Avatar>{item.User.nickname[0]}</Avatar>
+          </Link>
+        }
         description={item.content}
       />
       {item.UserId === userId ? (
