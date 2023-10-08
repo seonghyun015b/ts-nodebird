@@ -21,6 +21,7 @@
     "antd": "^5.8.0",
     "axios": "^1.4.0",
     "babel-plugin-styled-components": "^2.1.4",
+    "dayjs": "^1.11.10",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.16",
     "immer": "^10.0.2",
