@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../reducers';
 import { styled } from 'styled-components';
 import { Avatar, Button, Card, List, Popover } from 'antd';
+import Link from 'next/link';
 
 import PostImages from './PostImages';
 import PostCardContent from './PostCardContent';
@@ -82,11 +83,7 @@ const PostCard = ({ post }: PostCardProp) => {
         actions={[
           <RetweetOutlined key='retweet' onClick={onRetweet} />,
           liked ? (
-            <HeartTwoTone
-              twoToneColor='#eb2f96'
-              key='heart'
-              onClick={onUnLike}
-            />
+            <HeartTwoTone twoToneColor='#eb2f96' key='heart' onClick={onUnLike} />
           ) : (
             <HeartOutlined key='heart' onClick={onLike} />
           ),
@@ -98,11 +95,7 @@ const PostCard = ({ post }: PostCardProp) => {
                 {id && post.User.id === Number(id) ? (
                   <>
                     <Button>수정</Button>
-                    <Button
-                      danger
-                      loading={removePostLoading}
-                      onClick={onRemovePost}
-                    >
+                    <Button danger loading={removePostLoading} onClick={onRemovePost}>
                       삭제
                     </Button>
                   </>
@@ -115,28 +108,28 @@ const PostCard = ({ post }: PostCardProp) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
-        title={
-          post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null
-        }
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
         extra={id && <FollowButton post={post} />}
       >
         {post.RetweetId && post.Retweet ? (
-          <Card
-            cover={
-              post.Retweet.Images[0] && (
-                <PostImages images={post.Retweet.Images} />
-              )
-            }
-          >
+          <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
             <Card.Meta
-              avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+              avatar={
+                <Link href={`/user/${post.Retweet.User.id}`}>
+                  <Avatar>{post.User.nickname[0]}</Avatar>
+                </Link>
+              }
               title={post.User.nickname}
               description={<PostCardContent postData={post.Retweet.content} />}
             />
           </Card>
         ) : (
           <Card.Meta
-            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            avatar={
+              <Link href={`/user/${post.User.id}`}>
+                <Avatar>{post.User.nickname[0]}</Avatar>
+              </Link>
+            }
             title={post.User.nickname}
             description={<PostCardContent postData={post.content} />}
           />

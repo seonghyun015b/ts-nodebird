@@ -4,6 +4,7 @@ import { Comment, removeCommentAction } from '../reducers/post';
 import { useSelector } from 'react-redux';
 import { RootState } from '../reducers';
 import { useDispatch } from 'react-redux';
+import Link from 'next/link';
 
 interface CommentCardProp {
   item: Comment;
@@ -22,7 +23,11 @@ const CommentCard = ({ item }: CommentCardProp) => {
     <List.Item>
       <List.Item.Meta
         title={item.User.nickname}
-        avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+        avatar={
+          <Link href={`/user/${item.User.id}`}>
+            <Avatar>{item.User.nickname[0]}</Avatar>
+          </Link>
+        }
         description={item.content}
       />
       {item.UserId === userId ? (
