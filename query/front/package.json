@@ -1,0 +1,32 @@
+{
+  "name": "front",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.2.6",
+    "@faker-js/faker": "^8.1.0",
+    "@types/node": "20.6.3",
+    "@types/react": "18.2.22",
+    "@types/react-dom": "18.2.7",
+    "@types/react-slick": "^0.23.10",
+    "antd": "^5.9.2",
+    "axios": "^1.5.0",
+    "babel-plugin-styled-components": "^2.1.4",
+    "eslint": "8.49.0",
+    "eslint-config-next": "13.5.2",
+    "nanoid": "^5.0.1",
+    "next": "13.5.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-query": "^3.39.3",
+    "react-slick": "^0.29.0",
+    "styled-components": "^6.0.8",
+    "typescript": "5.2.2"
+  }
+}
